@@ -1,0 +1,11 @@
+.footer {
+  position: fixed;
+  left: 50%;
+  bottom: 1.25rem;
+  transform: translateX(-50%);
+  z-index: 5;
+  opacity: 0.6;
+  white-space: nowrap;
+  font-size: 0.85rem;
+  color: var(--muted);
+}

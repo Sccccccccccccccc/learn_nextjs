@@ -1,0 +1,19 @@
+.bg {
+  position: fixed;
+  inset: 0;
+  z-index: -10;
+  overflow: hidden;
+  background:
+    radial-gradient(1200px 800px at 18% 8%, var(--geo-a), transparent 60%),
+    radial-gradient(1000px 700px at 82% 92%, var(--geo-b), transparent 60%),
+    radial-gradient(820px 620px at 72% 28%, var(--geo-c), transparent 60%),
+    var(--bg);
+}
+
+.shape {
+  position: absolute;
+  border-radius: 26px;
+  border: 1px solid var(--line);
+  background: linear-gradient(135deg, var(--geo-a), var(--geo-b));
+  opacity: 0.6;
+}

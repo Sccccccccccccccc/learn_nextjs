@@ -1,0 +1,127 @@
+/**
+ * 参考 douLog/components/site/MainNav.vue 的 .menu-item 实现。
+ *
+ * 默认：文字下面一条 3px 圆角细条，图标字号 0（不可见、不占位）。
+ * hover / 当前页：细条高度撑满整块 -> 变成「药丸」底色，同时文字两侧补上内边距、
+ *                 图标展开到 0.9em 并带 0.25rem 右边距；hover 时图标左右摇摆一次。
+ */
+
+.nav {
+  /* 换色只改这两个变量：深色卡片 #1E2939 下的一套配色 */
+  --nav-text: #cfe0f7;
+  --nav-pill: rgba(96, 165, 250, 0.22);
+  /* 细条高度 / 内边距过渡时长 */
+  --nav-bar-height: 3px;
+  --nav-padding-duration: 300ms;
+  /* 图标的光学补偿：MingCute 可见笔迹只占 24×24 画布的上部 ~19/24，
+     而中文字形在行盒里略微偏下；实测图标视觉中心比文字高约 2px，这里补回来 */
+  --nav-icon-nudge: 2px;
+
+  /* 对应 index.vue 里 .main-menu-wrapper 的排布：居中一行 + gap-x-3 + py-6 */
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding-block: 1.5rem;
+  user-select: none;
+}
+
+.menuItem {
+  position: relative;
+  /* 建立层叠上下文，让 ::before 的 z-index:-1 只压在自己文字底下 */
+  z-index: 0;
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  color: var(--nav-text);
+  font-size: 1.125rem; /* text-lg */
+  line-height: 1.75rem; /* text-lg 配对的行高，决定药丸的高度 */
+  font-weight: 600; /* font-semibold */
+  cursor: pointer;
+  transition: padding var(--nav-padding-duration) cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 图标原本是 0 号字，等于藏起来；展开时才有 0.9em */
+.menuItem > svg {
+  font-size: 0em;
+  margin-right: 0;
+  /* 用相对定位做光学居中：不影响布局，也不会和 backshake 的 transform 冲突 */
+  position: relative;
+  top: var(--nav-icon-nudge);
+  transition:
+    font-size 150ms cubic-bezier(0.4, 0, 0.2, 1),
+    margin 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 底部那条细线，撑起来就是药丸底色 */
+.menuItem::before {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: var(--nav-bar-height);
+  z-index: -1;
+  border-radius: 0.75rem;
+  background: var(--nav-pill);
+  transition: height 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.menuItem:hover,
+.menuItem[data-active] {
+  padding-inline: 0.75rem; /* px-3 */
+}
+
+.menuItem:hover::before,
+.menuItem[data-active]::before {
+  height: 100%;
+}
+
+.menuItem:hover > svg,
+.menuItem[data-active] > svg {
+  font-size: 0.9em;
+  margin-right: 0.25rem; /* mr-1 */
+}
+
+.menuItem:hover > svg {
+  animation: backshake 0.5s linear;
+}
+
+/* 当前页：和 hover 一样，但不再响应点击 */
+.menuItem[data-active] {
+  pointer-events: none;
+}
+
+@keyframes backshake {
+  0% {
+    transform: rotate(8deg);
+  }
+
+  25% {
+    transform: rotate(-8deg);
+  }
+
+  50% {
+    transform: rotate(8deg);
+  }
+
+  75% {
+    transform: rotate(-8deg);
+  }
+
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .menuItem,
+  .menuItem > svg,
+  .menuItem::before {
+    transition: none;
+  }
+
+  .menuItem:hover > svg {
+    animation: none;
+  }
+}

@@ -1,0 +1,35 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client" // 使用的客户端
+  output   = "../src/generated/prisma" // 生成客户端代码的目录, 通过命令 npx prisma generate 生成
+}
+
+datasource db {
+  provider = "postgresql" // 数据库类型
+}
+
+// model 用于定义表结构
+// 定义完成之后使用命令 npx prisma migrate dev --name init 来迁移数据表，以用于同步数据库，其中--name init 代表迁移名称
+model User {
+  id        String   @id @default(cuid()) // 主键 修饰符cuid生成规则：时间戳+ 客户端指纹+ 序列号+ 随机数
+  email     String   @unique // 修饰符unique表示该字段唯一，内容不能重复
+  name      String?
+  password  String
+  posts     Post[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Post {
+  id        String   @id @default(cuid())
+  title     String
+  content   String?
+  published Boolean  @default(false)
+  // 一对多关联 onDelete: Cascade, onUpdate: Cascade 表示级联删除和级联更新
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade, onUpdate: Cascade) 
+  authorId  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
