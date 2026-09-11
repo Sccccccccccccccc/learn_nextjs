@@ -1,5 +1,4 @@
 /**
- * 参考 douLog/components/site/MainNav.vue 的 .menu-item 实现。
  *
  * 默认：文字下面一条 3px 圆角细条，图标字号 0（不可见、不占位）。
  * hover / 当前页：细条高度撑满整块 -> 变成「药丸」底色，同时文字两侧补上内边距、
@@ -92,6 +91,70 @@
   pointer-events: none;
 }
 
+/* 返回键：和菜单项正好相反 —— 图标默认 0.9em 可见、文字 0 号字藏着；
+   hover 时文字展开到 1em、图标收起。对应 Vue 里的 .invert-menu-item */
+.backItem {
+  position: relative;
+  z-index: 0;
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  color: var(--nav-text);
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: padding var(--nav-padding-duration) cubic-bezier(0.4, 0, 0.2, 1);
+  /* 这里用的是 <button>，先把浏览器默认样式清掉 */
+  appearance: none;
+  border: 0;
+  background: none;
+  padding: 0;
+  font-family: inherit;
+}
+
+.backItem > span {
+  font-size: 0em;
+  transition: font-size 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.backItem > svg {
+  font-size: 0.9em;
+  /* 和菜单项图标一样的光学补偿 */
+  position: relative;
+  top: var(--nav-icon-nudge);
+  transition: font-size 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.backItem::before {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: var(--nav-bar-height);
+  z-index: -1;
+  border-radius: 0.75rem;
+  background: var(--nav-pill);
+  transition: height 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.backItem:hover {
+  padding-inline: 0.75rem; /* px-3 */
+}
+
+.backItem:hover::before {
+  height: 100%;
+}
+
+.backItem:hover > span {
+  font-size: 1em;
+}
+
+.backItem:hover > svg {
+  font-size: 0em;
+}
+
 @keyframes backshake {
   0% {
     transform: rotate(8deg);
@@ -117,7 +180,11 @@
 @media (prefers-reduced-motion: reduce) {
   .menuItem,
   .menuItem > svg,
-  .menuItem::before {
+  .menuItem::before,
+  .backItem,
+  .backItem > span,
+  .backItem > svg,
+  .backItem::before {
     transition: none;
   }
 

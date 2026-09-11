@@ -1,11 +1,26 @@
 /**
  * MingCute 图标（line 版）内联 SVG。
- * 取自 @iconify-json/mingcute 的 `bear-line` / `pencil-line`，
- * 对应 douLog 里 `~icons/mingcute/*` 的那两个。
+ * 取自 @iconify-json/mingcute 的 `back-line` / `bear-line` / `pencil-line`，
+ * 对应 douLog 里 `~icons/mingcute/*` 的那几个。
  *
  * 尺寸写成 1em，父级用 font-size 控制大小 —— MainNav 的「图标默认 0 号字、
  * hover 展开到 0.9em」就是靠这个生效的。
  */
+
+export const BackIcon = () => (
+  <svg
+    viewBox="0 0 24 24"
+    width="1em"
+    height="1em"
+    aria-hidden="true"
+    focusable="false"
+  >
+    <path
+      fill="currentColor"
+      d="M3.076 5.617A1 1 0 0 1 4 5h10a7 7 0 1 1 0 14H5a1 1 0 1 1 0-2h9a5 5 0 1 0 0-10H6.414l1.793 1.793a1 1 0 0 1-1.414 1.414l-3.5-3.5a1 1 0 0 1-.217-1.09"
+    />
+  </svg>
+);
 
 export const BearIcon = () => (
   <svg

@@ -1,11 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import type { ReactNode } from "react";
 
 import styles from "./MainNav.module.css";
-import { BearIcon, PencilIcon } from "./icons";
+import { BackIcon, BearIcon, PencilIcon } from "./icons";
 
 type NavItem = {
   href: string;
@@ -19,11 +19,28 @@ const NAV_ITEMS: NavItem[] = [
   { href: "/postList", label: "文章", icon: <PencilIcon /> },
 ];
 
+/** 需要显示「返回」的页面（对应 douLog 里由 historyState.back 控制的那个入口） */
+const BACK_ROUTES = ["/postList"];
+
 const MainNav = () => {
   const pathname = usePathname();
+  const router = useRouter();
+  const showBack = BACK_ROUTES.includes(pathname);
 
   return (
     <nav className={styles.nav}>
+      {showBack && (
+        <button  
+          type="button"
+          className={styles.backItem}
+          onClick={() => router.back()}
+          aria-label="返回"
+        >
+          <BackIcon />
+          <span>返回</span>
+        </button>
+      )}
+
       {NAV_ITEMS.map((item) => {
         // 对应 Vue 的 router-link-exact-active：完全匹配才算当前页
         const isActive = pathname === item.href;
