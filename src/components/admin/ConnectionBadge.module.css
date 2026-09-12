@@ -1,0 +1,56 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 10px;
+  border: 1px solid var(--el-color-warning-light-8);
+  border-radius: 14px;
+  background: var(--el-color-warning-light-9);
+  color: var(--warning);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.badge[data-ok] {
+  border-color: var(--el-color-success-light-8);
+  background: var(--el-color-success-light-9);
+  color: var(--success);
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentcolor;
+  animation: pulse 1.8s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.35;
+  }
+}
+
+.sep {
+  opacity: 0.5;
+}
+
+.latency {
+  padding-left: 4px;
+  border-left: 1px solid currentcolor;
+  opacity: 0.65;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 11px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dot {
+    animation: none;
+  }
+}

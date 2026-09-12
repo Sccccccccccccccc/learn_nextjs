@@ -7,6 +7,8 @@ export default defineConfig({
   schema: "prisma/schema.prisma",
   migrations: {
     path: "prisma/migrations",
+    // npx prisma db seed 会执行这个脚本，用于初始化演示账号与示例文章
+    seed: "node prisma/seed.mjs",
   },
   datasource: {
     url: process.env["DATABASE_URL"],

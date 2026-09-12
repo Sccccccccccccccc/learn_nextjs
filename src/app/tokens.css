@@ -1,0 +1,171 @@
+/**
+ * 全站设计变量
+ * ---------------------------------------------------------------------------
+ * 色板：Element Plus (theme-chalk) 的官方色阶，保证与 elementui 观感完全一致。
+ * 布局：参考 vben-admin 的 design-tokens，preferences 通过 :root[data-theme='dark'] 切换。
+ */
+
+:root {
+  /* ===== Element Plus 主色 ===== */
+  --el-color-primary: #409eff;
+  --el-color-primary-light-3: #79bbff;
+  --el-color-primary-light-5: #a0cfff;
+  --el-color-primary-light-7: #c6e2ff;
+  --el-color-primary-light-8: #d9ecff;
+  --el-color-primary-light-9: #ecf5ff;
+  --el-color-primary-dark-2: #337ecc;
+
+  /* ===== Element Plus 功能色 ===== */
+  --el-color-success: #67c23a;
+  --el-color-success-light-3: #95d475;
+  --el-color-success-light-8: #e1f3d8;
+  --el-color-success-light-9: #f0f9eb;
+
+  --el-color-warning: #e6a23c;
+  --el-color-warning-light-3: #eebe77;
+  --el-color-warning-light-8: #faecd8;
+  --el-color-warning-light-9: #fdf6ec;
+
+  --el-color-danger: #f56c6c;
+  --el-color-danger-light-3: #f89898;
+  --el-color-danger-light-8: #fde2e2;
+  --el-color-danger-light-9: #fef0f0;
+
+  --el-color-info: #909399;
+  --el-color-info-light-3: #b1b3b8;
+  --el-color-info-light-8: #e9e9eb;
+  --el-color-info-light-9: #f4f4f5;
+
+  /* ===== Element Plus 文字 / 边框 / 填充 ===== */
+  --el-text-color-primary: #303133;
+  --el-text-color-regular: #606266;
+  --el-text-color-secondary: #909399;
+  --el-text-color-placeholder: #a8abb2;
+  --el-text-color-disabled: #c0c4cc;
+
+  --el-border-color: #dcdfe6;
+  --el-border-color-light: #e4e7ed;
+  --el-border-color-lighter: #ebeef5;
+  --el-border-color-extra-light: #f2f6fc;
+
+  --el-fill-color: #f0f2f5;
+  --el-fill-color-light: #f5f7fa;
+  --el-fill-color-lighter: #fafafa;
+  --el-fill-color-blank: #ffffff;
+
+  --el-border-radius-base: 4px;
+  --el-border-radius-small: 2px;
+  --el-border-radius-round: 20px;
+
+  /* ===== 语义层：页面直接用这组变量，暗色模式只需覆盖这里 ===== */
+  --bg-page: #f2f3f5; /* 主体区域背景（element 的 #f0f2f5 略提亮） */
+  --bg-container: #ffffff; /* 容器 / 卡片 / 侧边栏 */
+  --bg-header: #ffffff; /* 顶栏 */
+  --bg-sidebar: #ffffff; /* 侧边菜单 */
+  --bg-popup: #ffffff; /* 下拉面板 */
+  --bg-muted: var(--el-fill-color-light); /* 次级底色：表头、hover */
+  --bg-muted-deep: var(--el-fill-color);
+  --bg-code: #f6f8fa;
+
+  --border: var(--el-border-color-light); /* 常规分隔线 */
+  --border-strong: var(--el-border-color);
+  --border-weak: var(--el-border-color-lighter);
+  --divider: 1px solid var(--border);
+
+  --text-primary: var(--el-text-color-primary);
+  --text-regular: var(--el-text-color-regular);
+  --text-secondary: var(--el-text-color-secondary);
+  --text-placeholder: var(--el-text-color-placeholder);
+  --text-inverse: #ffffff;
+
+  /* 前台组件（Footer 等）早期用到的别名，保留兼容 */
+  --muted: var(--el-text-color-secondary);
+  --line: var(--el-border-color-light);
+
+  --primary: var(--el-color-primary);
+  --primary-hover: var(--el-color-primary-light-3);
+  --primary-active: var(--el-color-primary-dark-2);
+  --primary-soft: var(--el-color-primary-light-9);
+  --primary-soft-hover: var(--el-color-primary-light-8);
+  --focus-ring: rgba(64, 158, 255, 0.25);
+
+  --success: var(--el-color-success);
+  --warning: var(--el-color-warning);
+  --danger: var(--el-color-danger);
+  --info: var(--el-color-info);
+  --mask: rgba(0, 0, 0, 0.5);
+
+  /* ===== 布局尺寸（vben basic layout 的常用值） ===== */
+  --layout-header-height: 56px;
+  --layout-tabbar-height: 42px;
+  --layout-sidebar-width: 232px;
+  --layout-content-padding: 16px;
+  --layout-radius: 8px;
+  --layout-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --layout-shadow: 0 6px 18px rgba(31, 45, 61, 0.08);
+  --layout-shadow-lg: 0 10px 32px rgba(31, 45, 61, 0.14);
+  --layout-transition: 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+
+  --el-font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue",
+    Arial, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  --el-font-size-base: 14px;
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  --el-text-color-primary: #e5eaf3;
+  --el-text-color-regular: #cfd3dc;
+  --el-text-color-secondary: #a3a6ad;
+  --el-text-color-placeholder: #8d9095;
+  --el-text-color-disabled: #6c6e72;
+
+  --el-border-color: #414243;
+  --el-border-color-light: #363637;
+  --el-border-color-lighter: #2b2b2c;
+  --el-border-color-extra-light: #232324;
+
+  --el-fill-color: #262727;
+  --el-fill-color-light: #1d1d1d;
+  --el-fill-color-lighter: #181819;
+  --el-fill-color-blank: #141414;
+
+  --el-color-primary: #409eff;
+  --el-color-primary-light-3: #3375b9;
+  --el-color-primary-light-5: #2a598a;
+  --el-color-primary-light-7: #213d5b;
+  --el-color-primary-light-8: #1d3043;
+  --el-color-primary-light-9: #18222c;
+
+  --el-color-success-light-8: #24331f;
+  --el-color-success-light-9: #1c2518;
+  --el-color-warning-light-8: #362c1b;
+  --el-color-warning-light-9: #292218;
+  --el-color-danger-light-8: #3a2626;
+  --el-color-danger-light-9: #2b1d1d;
+  --el-color-info-light-8: #2b2c2e;
+  --el-color-info-light-9: #202121;
+
+  /* 暗色下功能色适当提亮，保证在深底上的可读性 */
+  --el-color-danger: #f78989;
+  --el-color-warning: #eebe77;
+  --el-color-info: #a6a9ad;
+
+  /* 底色对齐 vben 的 dark design tokens：
+     --background 222.34 10.43% 12.27% ≈ #1c1f27，--background-deep 220 13.06% 9% ≈ #141519 */
+  --bg-page: #141519;
+  --bg-container: #1c1f27;
+  --bg-header: #1c1f27;
+  --bg-sidebar: #1c1f27;
+  --bg-popup: #23262f;
+  --bg-code: #181a20;
+
+  --text-inverse: #ffffff;
+  --focus-ring: rgba(64, 158, 255, 0.35);
+  --mask: rgba(0, 0, 0, 0.65);
+
+  --layout-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --layout-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+  --layout-shadow-lg: 0 10px 32px rgba(0, 0, 0, 0.6);
+  color-scheme: dark;
+}

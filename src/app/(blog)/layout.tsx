@@ -1,23 +1,20 @@
 import type { Metadata } from "next";
-import "@/app/globals.css";
 import GeometricBackground from "@/components/GeometricBackground";
 import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
-  title: "My App",
-  description: "My App",
+  title: "首页",
+  description: "博客前台",
 };
 
-const RootLayout = ({ children }: LayoutProps<"/">) => {
+const BlogLayout = ({ children }: LayoutProps<"/">) => {
   return (
-    <html lang="en">
-      <body>
-        <GeometricBackground />
-        {children}
-        <Footer />
-      </body>
-    </html>
+    <>
+      <GeometricBackground />
+      {children}
+      <Footer />
+    </>
   );
 };
 
-export default RootLayout;
+export default BlogLayout;

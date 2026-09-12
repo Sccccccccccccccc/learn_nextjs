@@ -1,0 +1,355 @@
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex: none;
+  height: var(--layout-header-height);
+  padding: 0 16px;
+  background: var(--bg-header);
+  border-bottom: var(--divider);
+}
+
+.left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ------------------------------ 面包屑 ------------------------------ */
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  font-size: 13.5px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.crumb {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.crumbSep {
+  color: var(--text-placeholder);
+}
+
+.crumbLink {
+  color: var(--text-secondary);
+}
+
+.crumbLink:hover {
+  color: var(--primary);
+}
+
+.crumbCurrent {
+  color: var(--text-primary);
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ------------------------------ 图标按钮 ------------------------------ */
+
+.iconButton {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-regular);
+  cursor: pointer;
+  transition: background var(--layout-transition), color var(--layout-transition);
+}
+
+.iconButton:hover {
+  background: var(--bg-muted);
+  color: var(--text-primary);
+}
+
+.menuButton {
+  display: none;
+}
+
+.dot {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--danger);
+  box-shadow: 0 0 0 2px var(--bg-header);
+}
+
+/* ------------------------------ 搜索 ------------------------------ */
+
+.search {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  width: 220px;
+  height: 34px;
+  padding: 0 11px;
+  border: 1px solid var(--border);
+  border-radius: 17px;
+  background: var(--bg-muted);
+  color: var(--text-placeholder);
+  transition: border-color var(--layout-transition), box-shadow var(--layout-transition),
+    background var(--layout-transition);
+}
+
+.search:focus-within {
+  background: var(--bg-container);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--focus-ring);
+}
+
+.searchInput {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 13px;
+  outline: none;
+}
+
+.searchInput::placeholder {
+  color: var(--text-placeholder);
+}
+
+/* ------------------------------ 用户区 ------------------------------ */
+
+.userWrap {
+  position: relative;
+}
+
+.user {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  cursor: pointer;
+  transition: background var(--layout-transition);
+}
+
+.user:hover {
+  background: var(--bg-muted);
+}
+
+.avatar,
+.avatarLarge {
+  display: grid;
+  place-items: center;
+  flex: none;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary), var(--primary-active));
+  color: #fff;
+  font-weight: 600;
+}
+
+.avatar {
+  width: 30px;
+  height: 30px;
+  font-size: 13px;
+}
+
+.avatarLarge {
+  width: 40px;
+  height: 40px;
+  font-size: 16px;
+}
+
+.userMeta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  line-height: 1.2;
+}
+
+.userMeta strong {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.userMeta small {
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+.userCaret {
+  color: var(--text-placeholder);
+}
+
+/* ------------------------------ 下拉面板 ------------------------------ */
+
+.scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+}
+
+.dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 31;
+  width: 258px;
+  padding: 6px;
+  border: 1px solid var(--border);
+  border-radius: var(--layout-radius);
+  background: var(--bg-popup);
+  box-shadow: var(--layout-shadow-lg);
+  animation: dropdown-in 0.16s ease;
+}
+
+@keyframes dropdown-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dropdownHead {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+}
+
+.dropdownMeta {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.3;
+}
+
+.dropdownMeta strong {
+  font-size: 13.5px;
+  color: var(--text-primary);
+}
+
+.dropdownMeta small {
+  font-size: 11.5px;
+  color: var(--text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dropdownSection {
+  padding: 6px;
+  border-top: var(--divider);
+}
+
+.dropdownTitle {
+  margin: 0 0 8px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  color: var(--text-placeholder);
+}
+
+.themeRow {
+  display: flex;
+  gap: 6px;
+}
+
+.themeChip {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  height: 30px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg-container);
+  color: var(--text-regular);
+  font-family: inherit;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all var(--layout-transition);
+}
+
+.themeChip:hover {
+  border-color: var(--primary-hover);
+  color: var(--primary);
+}
+
+.themeChip[data-active] {
+  border-color: var(--primary);
+  background: var(--primary-soft);
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.dropdownItem {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  height: 34px;
+  padding: 0 10px;
+  border-radius: 6px;
+  color: var(--text-regular);
+  font-size: 13px;
+  transition: background var(--layout-transition), color var(--layout-transition);
+}
+
+.dropdownItem:hover {
+  background: var(--bg-muted);
+  color: var(--text-primary);
+}
+
+.dropdownItemDanger {
+  color: var(--danger);
+}
+
+.dropdownItemDanger:hover {
+  background: var(--el-color-danger-light-9);
+  color: var(--danger);
+}
+
+@media (max-width: 1024px) {
+  .search {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .menuButton {
+    display: grid;
+  }
+
+  .userMeta {
+    display: none;
+  }
+}

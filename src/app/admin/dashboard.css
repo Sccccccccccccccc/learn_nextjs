@@ -1,0 +1,187 @@
+/* 工作台页面级样式（前缀 admin-，仅本页 import） */
+
+.admin-grid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.admin-grid-2 {
+  display: grid;
+  grid-template-columns: 1.55fr 1fr;
+  gap: 16px;
+}
+
+.admin-page-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.admin-page-head__title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  color: var(--text-primary);
+}
+
+.admin-page-head__desc {
+  margin: 4px 0 0;
+  font-size: 12.5px;
+  color: var(--text-secondary);
+}
+
+.admin-page-head__actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* -------------------------- 统计卡片 -------------------------- */
+
+.admin-stat {
+  padding: 18px;
+}
+
+.admin-stat__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.admin-stat__label {
+  font-size: 12.5px;
+  color: var(--text-secondary);
+}
+
+.admin-stat__icon {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  background: var(--primary-soft);
+  color: var(--primary);
+}
+
+.admin-stat__icon[data-tone="success"] {
+  background: var(--el-color-success-light-9);
+  color: var(--success);
+}
+
+.admin-stat__icon[data-tone="warning"] {
+  background: var(--el-color-warning-light-9);
+  color: var(--warning);
+}
+
+.admin-stat__icon[data-tone="info"] {
+  background: var(--el-color-info-light-9);
+  color: var(--info);
+}
+
+.admin-stat__value {
+  margin-top: 10px;
+  font-size: 26px;
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--text-primary);
+}
+
+.admin-stat__foot {
+  margin-top: 6px;
+  font-size: 11.5px;
+  color: var(--text-secondary);
+}
+
+.admin-stat__foot b {
+  color: var(--success);
+  font-weight: 600;
+}
+
+/* -------------------------- 待办列表 -------------------------- */
+
+.admin-todo {
+  margin: 0;
+  padding-left: 18px;
+  color: var(--text-regular);
+  font-size: 13px;
+}
+
+.admin-todo li + li {
+  margin-top: 8px;
+}
+
+.admin-todo span {
+  color: var(--text-placeholder);
+  font-size: 12px;
+}
+
+/* -------------------------- 表格里的标题单元 -------------------------- */
+
+.admin-post-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.admin-post-cell__title {
+  color: var(--text-primary);
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+}
+
+a.admin-post-cell__title:hover {
+  color: var(--primary);
+}
+
+/* -------------------------- 提示条 -------------------------- */
+
+.admin-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  border: 1px solid var(--el-color-warning-light-8);
+  border-radius: var(--layout-radius);
+  background: var(--el-color-warning-light-9);
+  color: #a06a13;
+  font-size: 13px;
+}
+
+:root[data-theme="dark"] .admin-alert {
+  color: var(--warning);
+}
+
+.admin-alert svg {
+  flex: none;
+  margin-top: 1px;
+}
+
+@media (max-width: 1200px) {
+  .admin-grid-4 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .admin-grid-2 {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .admin-grid-4 {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .admin-page-head {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

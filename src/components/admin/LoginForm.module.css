@@ -1,0 +1,110 @@
+.page {
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  padding: 24px;
+  background:
+    radial-gradient(1200px 600px at 15% -10%, rgba(64, 158, 255, 0.18), transparent 60%),
+    radial-gradient(900px 500px at 100% 110%, rgba(103, 194, 58, 0.14), transparent 55%),
+    var(--bg-page);
+}
+
+.card {
+  width: 100%;
+  max-width: 400px;
+  padding: 28px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--bg-container);
+  box-shadow: var(--layout-shadow-lg);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 22px;
+}
+
+.brandMark {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--primary), var(--primary-active));
+  color: #fff;
+  box-shadow: 0 6px 16px rgba(64, 158, 255, 0.35);
+}
+
+.brandTitle {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.brandDesc {
+  margin: 2px 0 0;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.submit {
+  width: 100%;
+  height: 38px;
+  font-size: 14px;
+  letter-spacing: 2px;
+}
+
+.error {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  padding: 9px 11px;
+  border: 1px solid var(--el-color-danger-light-8);
+  border-radius: var(--el-border-radius-base);
+  background: var(--el-color-danger-light-9);
+  color: var(--danger);
+  font-size: 12.5px;
+}
+
+.demo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin: 0;
+  padding: 9px;
+  border-radius: var(--el-border-radius-base);
+  background: var(--bg-muted);
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 22px;
+  padding-top: 16px;
+  border-top: var(--divider);
+  font-size: 12px;
+  color: var(--text-placeholder);
+}
+
+.footer a {
+  color: var(--text-secondary);
+}
+
+.footer a:hover {
+  color: var(--primary);
+}

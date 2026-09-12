@@ -1,0 +1,190 @@
+.form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: 16px;
+  align-items: start;
+}
+
+.main {
+  min-width: 0;
+}
+
+.side {
+  position: sticky;
+  top: calc(var(--layout-header-height) + var(--layout-tabbar-height) + 16px);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ------------------------------ 编辑器 ------------------------------ */
+
+.editor {
+  overflow: hidden;
+}
+
+.editorHead {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border);
+}
+
+.titleInput {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 17px;
+  font-weight: 600;
+  outline: none;
+}
+
+.titleInput::placeholder {
+  color: var(--text-placeholder);
+  font-weight: 400;
+}
+
+.titleCount {
+  flex: none;
+  font-size: 12px;
+  color: var(--text-placeholder);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+.textarea {
+  display: block;
+  width: 100%;
+  min-height: 460px;
+  padding: 18px;
+  border: 0;
+  background: var(--bg-container);
+  color: var(--text-regular);
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Microsoft YaHei", monospace;
+  font-size: 13.5px;
+  line-height: 1.85;
+  resize: vertical;
+  outline: none;
+}
+
+.textarea::placeholder {
+  color: var(--text-placeholder);
+}
+
+.editorFoot {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 10px 18px;
+  border-top: 1px solid var(--border);
+  background: var(--bg-muted);
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.markdownHint {
+  margin-left: auto;
+  color: var(--text-placeholder);
+}
+
+/* ------------------------------ 侧栏 ------------------------------ */
+
+.sideBody {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px 18px;
+}
+
+.sideActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.tip {
+  margin: 0;
+  padding-top: 4px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+.error,
+.notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  margin: 0;
+  padding: 9px 11px;
+  border-radius: var(--el-border-radius-base);
+  font-size: 12.5px;
+  line-height: 1.6;
+}
+
+.error {
+  border: 1px solid var(--el-color-danger-light-8);
+  background: var(--el-color-danger-light-9);
+  color: var(--danger);
+}
+
+.notice {
+  border: 1px solid var(--el-color-success-light-8);
+  background: var(--el-color-success-light-9);
+  color: var(--success);
+}
+
+/* ------------------------------ 元数据 ------------------------------ */
+
+.metaList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+}
+
+.metaList > div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.metaList dt {
+  font-size: 12px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.metaList dd {
+  margin: 0;
+  font-size: 12.5px;
+  color: var(--text-regular);
+  text-align: right;
+  word-break: break-all;
+}
+
+.mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 11.5px;
+  color: var(--text-secondary);
+}
+
+@media (max-width: 1100px) {
+  .form {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .side {
+    position: static;
+  }
+
+  .textarea {
+    min-height: 340px;
+  }
+}

@@ -1,0 +1,117 @@
+.tabbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex: none;
+  height: var(--layout-tabbar-height);
+  padding: 0 10px 0 12px;
+  background: var(--bg-container);
+  border-bottom: var(--divider);
+}
+
+.tabs {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.tab {
+  display: flex;
+  align-items: center;
+  flex: none;
+  height: 28px;
+  padding: 0 4px 0 2px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg-container);
+  color: var(--text-secondary);
+  transition: all var(--layout-transition);
+}
+
+.tab:hover {
+  border-color: var(--el-color-primary-light-5);
+  color: var(--text-primary);
+}
+
+.tab[data-active] {
+  border-color: var(--primary);
+  background: var(--primary-soft);
+  color: var(--primary);
+}
+
+.tabButton {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 100%;
+  padding: 0 8px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font-family: inherit;
+  font-size: 12.5px;
+  cursor: pointer;
+}
+
+.tabDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--text-placeholder);
+  transition: background var(--layout-transition);
+}
+
+.tab[data-active] .tabDot {
+  background: var(--primary);
+}
+
+.tabLabel {
+  white-space: nowrap;
+}
+
+.tabClose {
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  margin-right: 2px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--text-placeholder);
+  cursor: pointer;
+  transition: background var(--layout-transition), color var(--layout-transition);
+}
+
+.tabClose:hover {
+  background: var(--el-color-danger-light-8);
+  color: var(--danger);
+}
+
+.refresh {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 28px;
+  height: 28px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--layout-transition);
+}
+
+.refresh:hover {
+  border-color: var(--border);
+  background: var(--bg-muted);
+  color: var(--text-primary);
+}

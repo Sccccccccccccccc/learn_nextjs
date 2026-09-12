@@ -36,6 +36,9 @@ yarn-error.log*
 # vercel
 .vercel
 
+# 本地截图 / 调试产物（DSH vision 工具输出）
+.dsh-vision-router
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

@@ -5,7 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import type { ReactNode } from "react";
 
 import styles from "./MainNav.module.css";
-import { BackIcon, BearIcon, PencilIcon } from "./icons";
+import { BackIcon, BearIcon, PencilIcon, SettingIcon } from "./icons";
 
 type NavItem = {
   href: string;
@@ -13,10 +13,11 @@ type NavItem = {
   icon: ReactNode;
 };
 
-/** 暂时只放两项：我 / 文章。以后直接往这里追加即可。 */
+/** 暂时只放三项：我 / 文章 / 后台。以后直接往这里追加即可。 */
 const NAV_ITEMS: NavItem[] = [
   { href: "/index", label: "我", icon: <BearIcon /> },
   { href: "/postList", label: "文章", icon: <PencilIcon /> },
+  { href: "/admin", label: "后台", icon: <SettingIcon /> },
 ];
 
 /** 需要显示「返回」的页面（对应 douLog 里由 historyState.back 控制的那个入口） */
