@@ -1,0 +1,125 @@
+/**
+ * 参考 douLog/components/site/ArticleItem.vue。
+ *
+ * 卡片：细边框 + 圆角；hover 时一条主色渐变从左侧扫过（背景图 300% 宽 + 位移），
+ * 同时边框变主色。右侧有封面图时显示 240×163，窄屏（<768px）自动换行占满宽度。
+ */
+
+.item {
+  /* 配色令牌：适配深色卡片 #1E2939，换肤改这里 */
+  --article-surface: rgba(255, 255, 255, 0.02);
+  --article-border: rgba(148, 163, 184, 0.28);
+  --article-border-hover: rgba(96, 165, 250, 0.65);
+  --article-sweep: rgba(96, 165, 250, 0.22);
+  --article-title: #e5eaf3;
+  --article-meta: #94a3b8;
+
+  display: flex;
+  flex-direction: column; /* 窄屏竖排，md 以上横排 */
+  justify-content: space-between;
+  border: 1px solid var(--article-border);
+  border-radius: 1rem; /* rounded-2xl */
+  padding: 0.5rem; /* p-2 */
+  background-color: var(--article-surface);
+  /* hover 扫光：90° 渐变，0~45% 实色 -> 65% 渐隐 */
+  background-image: linear-gradient(
+    90deg,
+    var(--article-sweep) 0%,
+    var(--article-sweep) 45%,
+    transparent 65%,
+    transparent 100%
+  );
+  background-size: 300% 100%;
+  background-position-x: 100%;
+  transition:
+    border-color 0.5s linear,
+    background-position-x 0.5s ease-out;
+}
+
+.item:hover {
+  border-color: var(--article-border-hover);
+  background-position-x: 0%;
+}
+
+/* 左列：标题 / 元信息 / 摘要 */
+.left {
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+}
+
+.title {
+  font-size: 1.5rem; /* text-2xl */
+  font-weight: 700;
+  color: var(--article-title);
+}
+
+.details {
+  display: flex;
+  align-items: center;
+  column-gap: 0.75rem; /* gap-x-3 */
+  font-size: 0.875rem; /* text-sm */
+  color: var(--article-meta);
+}
+
+.detailItem {
+  display: flex;
+  align-items: center;
+  column-gap: 0.25rem; /* gap-x-1 */
+}
+
+.tagItem {
+  white-space: nowrap;
+}
+
+/* 摘要：三行截断 */
+.summary {
+  margin-top: 0.5rem;
+  display: -webkit-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  color: var(--article-meta);
+}
+
+/* 右列：封面图 */
+.right {
+  flex-grow: 0;
+  flex-shrink: 0;
+  width: 240px;
+  height: 163px;
+}
+
+.right img {
+  width: 100%;
+  height: 100%;
+  border-radius: 0.75rem; /* rounded-xl */
+  object-fit: cover;
+}
+
+@media (min-width: 768px) {
+  .item {
+    flex-direction: row;
+  }
+}
+
+@media (min-width: 1024px) {
+  .right {
+    margin-left: 0.5rem; /* lg:ml-2 */
+  }
+}
+
+/* 窄屏：图文上下排列，图占满宽度 */
+@media (max-width: 767.98px) {
+  .right {
+    width: 100%;
+    margin-top: 0.5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .item {
+    transition: none;
+  }
+}
