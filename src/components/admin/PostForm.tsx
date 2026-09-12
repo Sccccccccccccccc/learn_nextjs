@@ -2,12 +2,20 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useMemo, useState, useTransition } from "react";
+import { Suspense, lazy, useState, useMemo, useTransition } from "react";
 
 import { countWords, formatDateTime } from "./format";
 import { AlertIcon, ChevronLeftIcon, DocumentIcon, ExternalIcon } from "./icons";
 import type { ActionResult } from "@/server/actions";
 import styles from "./PostForm.module.css";
+
+/**
+ * Markdown 渲染器用 React.lazy 拆出去
+ * next/dynamic 会在页面里注册预加载，实测首屏 28ms 就发了一次 Low 优先级请求，
+ * 等于把 320KB 的渲染器（react-markdown + highlight.js）提前拉下来。
+ * React.lazy 只在组件真正首次渲染时才触发 import，不写文章预览就不会下载。
+ */
+const MarkdownPreview = lazy(() => import("./MarkdownPreview"));
 
 type SaveAction = (formData: FormData) => Promise<ActionResult>;
 
@@ -17,9 +25,32 @@ export type PostFormValues = {
   published: boolean;
 };
 
+/** 编辑区视图：纯编辑 / 左写右预览 / 纯预览 */
+type ViewMode = "edit" | "split" | "preview";
+
+const VIEW_MODES: { value: ViewMode; label: string }[] = [
+  { value: "edit", label: "编辑" },
+  { value: "split", label: "分屏" },
+  { value: "preview", label: "预览" },
+];
+
+/** 渲染器 chunk 下载期间的占位（通常只有几十毫秒） */
+const PreviewSkeleton = () => (
+  <div className={styles.previewSkeleton} aria-hidden="true">
+    <div className={styles.previewSkeletonBlock} style={{ width: "46%", height: 18 }} />
+    <div className={styles.previewSkeletonBlock} style={{ width: "92%" }} />
+    <div className={styles.previewSkeletonBlock} style={{ width: "86%" }} />
+    <div className={styles.previewSkeletonBlock} style={{ width: "70%" }} />
+    <div className={styles.previewSkeletonBlock} style={{ width: "100%", height: 96 }} />
+  </div>
+);
+
 /**
  * 文章编辑表单
- * 左侧正文 + 右侧信息栏（状态、操作、元数据），保存走 Server Action。
+ * 左侧正文（编辑 / 分屏 / 预览三种视图）+ 右侧信息栏（状态、操作、元数据），
+ * 保存走 Server Action。
+ * 预览组件只在切到「分屏 / 预览」时才挂载，react-markdown 与 highlight.js
+ * 因此留在独立 chunk 里，写文章时不下载。
  */
 const PostForm = ({
   mode,
@@ -44,6 +75,7 @@ const PostForm = ({
   const [title, setTitle] = useState(initial.title);
   const [content, setContent] = useState(initial.content);
   const [published, setPublished] = useState(initial.published);
+  const [view, setView] = useState<ViewMode>("edit");
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(
     saved === "created" ? "文章已创建" : saved === "updated" ? "保存成功" : null,
@@ -51,6 +83,10 @@ const PostForm = ({
   const [pending, startTransition] = useTransition();
 
   const words = useMemo(() => countWords(content), [content]);
+  const paragraphs = useMemo(
+    () => content.split(/\n{2,}/).filter((block) => block.trim()).length,
+    [content],
+  );
 
   /** 提交：nextPublished 为本次要写入的发布状态 */
   const submit = (nextPublished: boolean) => {
@@ -101,20 +137,56 @@ const PostForm = ({
             <span className={styles.titleCount}>{title.length}/120</span>
           </div>
 
-          <textarea
-            className={styles.textarea}
-            value={content}
-            onChange={(event) => setContent(event.target.value)}
-            placeholder={"在这里写正文，支持 Markdown 语法。\n\n## 二级标题\n- 列表项\n```ts\nconst hello = 'world'\n```"}
-            aria-label="文章正文"
-            spellCheck={false}
-          />
+          <div className={styles.viewBar}>
+            <div className={styles.viewSwitch} role="tablist" aria-label="编辑区视图">
+              {VIEW_MODES.map((item) => (
+                <button
+                  key={item.value}
+                  type="button"
+                  role="tab"
+                  aria-selected={view === item.value}
+                  className={styles.viewChip}
+                  data-active={view === item.value || undefined}
+                  onClick={() => setView(item.value)}
+                >
+                  {item.label}
+                </button>
+              ))}
+            </div>
+
+            <span className={styles.viewHint}>
+              {view === "preview"
+                ? "预览为只读视图，切回「编辑」继续写"
+                : "支持 GFM：表格、任务列表、删除线、围栏代码块"}
+            </span>
+          </div>
+
+          <div className={styles.editorBody} data-view={view}>
+            {view !== "preview" ? (
+              <textarea
+                className={styles.textarea}
+                value={content}
+                onChange={(event) => setContent(event.target.value)}
+                placeholder={"在这里写正文，支持 Markdown 语法。\n\n## 二级标题\n- 列表项\n- [x] 已完成的任务\n\n| 列 A | 列 B |\n| --- | --- |\n| 1 | 2 |\n\n```ts\nconst hello = 'world'\n```"}
+                aria-label="文章正文"
+                spellCheck={false}
+              />
+            ) : null}
+
+            {view !== "edit" ? (
+              <div className={styles.previewPane}>
+                <Suspense fallback={<PreviewSkeleton />}>
+                  <MarkdownPreview content={content} showToolbar={view === "split"} />
+                </Suspense>
+              </div>
+            ) : null}
+          </div>
 
           <div className={styles.editorFoot}>
             <span>字数 {words.toLocaleString("zh-CN")}</span>
             <span>字符 {content.length.toLocaleString("zh-CN")}</span>
-            <span>段落 {content.split(/\n{2,}/).filter((block) => block.trim()).length}</span>
-            <span className={styles.markdownHint}>Markdown 预览将在下一版接入</span>
+            <span>段落 {paragraphs.toLocaleString("zh-CN")}</span>
+            <span className={styles.markdownHint}>代码高亮：highlight.js（common 语言集）</span>
           </div>
         </section>
       </div>

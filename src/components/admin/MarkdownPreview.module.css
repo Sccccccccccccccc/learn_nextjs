@@ -1,0 +1,467 @@
+/* ===========================================================================
+   Markdown 预览样式
+   - 排版：对齐 element-plus 的字号节奏（14px 基准），标题靠字号 + 字重区分
+   - 代码高亮：token 配色参照 highlight.js 官方 github / github-dark 主题实现，
+     这样配色体系和编辑器其它部分共用 tokens.css 的亮暗切换，不用再挂两份官方 CSS
+   =========================================================================== */
+
+.previewRoot {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+  background: var(--bg-container);
+}
+
+/* 打字过程中「预览落后于输入」时轻微降透明度，提示还在追 */
+.previewRoot[data-stale] .markdown {
+  opacity: 0.72;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: none;
+  height: 38px;
+  padding: 0 14px;
+  border-bottom: var(--divider);
+  background: var(--bg-muted);
+}
+
+.toolbarDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--primary);
+}
+
+.toolbarLabel {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-regular);
+}
+
+.toolbarMeta {
+  margin-left: auto;
+  font-size: 11.5px;
+  color: var(--text-secondary);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+.scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 18px 22px 32px;
+}
+
+/* 占位与骨架 */
+
+.empty {
+  margin: 0;
+  padding: 40px 0;
+  text-align: center;
+  font-size: 13px;
+  color: var(--text-placeholder);
+}
+
+.skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 22px;
+}
+
+.skeletonLine {
+  height: 13px;
+  border-radius: 6px;
+  background: linear-gradient(90deg, var(--bg-muted) 25%, var(--bg-muted-deep) 37%, var(--bg-muted) 63%);
+  background-size: 400% 100%;
+  animation: preview-loading 1.4s ease infinite;
+}
+
+.skeletonHint {
+  margin: 0;
+  padding: 0 22px 22px;
+  font-size: 12px;
+  color: var(--text-placeholder);
+}
+
+@keyframes preview-loading {
+  0% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0 50%;
+  }
+}
+
+/* ------------------------------ Markdown 排版 ------------------------------ */
+
+.markdown {
+  max-width: 760px;
+  transition: opacity 0.15s linear;
+  color: var(--text-regular);
+  font-size: 14px;
+  line-height: 1.8;
+  overflow-wrap: break-word;
+}
+
+.markdown > :first-child {
+  margin-top: 0;
+}
+
+.markdown > :last-child {
+  margin-bottom: 0;
+}
+
+.markdown p {
+  margin: 0 0 14px;
+}
+
+.markdown h1,
+.markdown h2,
+.markdown h3,
+.markdown h4,
+.markdown h5,
+.markdown h6 {
+  margin: 26px 0 12px;
+  color: var(--text-primary);
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.markdown h1 {
+  padding-bottom: 8px;
+  border-bottom: var(--divider);
+  font-size: 24px;
+}
+
+.markdown h2 {
+  padding-bottom: 7px;
+  border-bottom: var(--divider);
+  font-size: 20px;
+}
+
+.markdown h3 {
+  font-size: 17px;
+}
+
+.markdown h4 {
+  font-size: 15px;
+}
+
+.markdown h5,
+.markdown h6 {
+  font-size: 14px;
+  color: var(--text-regular);
+}
+
+.markdown strong {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.markdown em {
+  font-style: italic;
+}
+
+.markdown del {
+  color: var(--text-secondary);
+}
+
+.markdown a {
+  color: var(--primary);
+  text-decoration: none;
+  border-bottom: 1px solid var(--el-color-primary-light-5);
+}
+
+.markdown a:hover {
+  color: var(--primary-hover);
+  border-bottom-color: var(--primary-hover);
+}
+
+.markdown ul,
+.markdown ol {
+  margin: 0 0 14px;
+  padding-left: 24px;
+}
+
+.markdown li + li {
+  margin-top: 4px;
+}
+
+.markdown li > ul,
+.markdown li > ol {
+  margin: 4px 0 0;
+}
+
+/* GFM 任务列表 */
+.markdown li:has(> input[type="checkbox"]) {
+  list-style: none;
+  margin-left: -20px;
+}
+
+.markdown input[type="checkbox"] {
+  width: 14px;
+  height: 14px;
+  margin-right: 6px;
+  vertical-align: -2px;
+  accent-color: var(--primary);
+}
+
+.markdown blockquote {
+  margin: 0 0 14px;
+  padding: 8px 16px;
+  border-left: 3px solid var(--el-color-primary-light-5);
+  border-radius: 0 var(--el-border-radius-base) var(--el-border-radius-base) 0;
+  background: var(--bg-muted);
+  color: var(--text-secondary);
+}
+
+.markdown blockquote > :last-child {
+  margin-bottom: 0;
+}
+
+.markdown hr {
+  margin: 24px 0;
+  border: 0;
+  border-top: var(--divider);
+}
+
+/* 行内代码：不参与语法高亮，只做底色区分 */
+.markdown :not(pre) > code {
+  padding: 2px 5px;
+  border: 1px solid var(--border-weak);
+  border-radius: var(--el-border-radius-base);
+  background: var(--bg-muted-deep);
+  color: var(--el-color-danger);
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 0.875em;
+}
+
+/* 代码块 */
+.markdown pre {
+  margin: 0 0 16px;
+  padding: 14px 16px;
+  border: 1px solid var(--border-weak);
+  border-radius: var(--el-border-radius-base);
+  background: var(--el-fill-color-lighter);
+  overflow-x: auto;
+  line-height: 1.65;
+}
+
+.markdown pre code {
+  display: block;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 12.5px;
+  white-space: pre;
+}
+
+/* 表格 */
+.markdown table {
+  display: block;
+  width: max-content;
+  max-width: 100%;
+  margin: 0 0 16px;
+  border-collapse: separate;
+  border-spacing: 0;
+  overflow-x: auto;
+  font-size: 13px;
+}
+
+.markdown th,
+.markdown td {
+  padding: 7px 13px;
+  border: var(--divider);
+  text-align: left;
+}
+
+.markdown th {
+  background: var(--bg-muted);
+  color: var(--text-primary);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.markdown tbody tr:nth-child(even) td {
+  background: var(--bg-muted);
+}
+
+.markdown img {
+  max-width: 100%;
+  border-radius: var(--el-border-radius-base);
+}
+
+.markdown kbd {
+  padding: 2px 5px;
+  border: var(--divider);
+  border-bottom-width: 2px;
+  border-radius: var(--el-border-radius-base);
+  background: var(--bg-muted);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.85em;
+}
+
+/* ------------------------------ 代码高亮 ------------------------------ */
+/* 亮色 token（参照 highlight.js github 主题） */
+
+.markdown :global(.hljs-comment),
+.markdown :global(.hljs-quote) {
+  color: #6a737d;
+  font-style: italic;
+}
+
+.markdown :global(.hljs-keyword),
+.markdown :global(.hljs-doctag),
+.markdown :global(.hljs-template-tag),
+.markdown :global(.hljs-template-variable),
+.markdown :global(.hljs-type),
+.markdown :global(.hljs-variable.language_) {
+  color: #d73a49;
+}
+
+.markdown :global(.hljs-title),
+.markdown :global(.hljs-title.class_),
+.markdown :global(.hljs-title.function_) {
+  color: #6f42c1;
+}
+
+.markdown :global(.hljs-attr),
+.markdown :global(.hljs-attribute),
+.markdown :global(.hljs-literal),
+.markdown :global(.hljs-meta),
+.markdown :global(.hljs-number),
+.markdown :global(.hljs-operator),
+.markdown :global(.hljs-variable),
+.markdown :global(.hljs-selector-attr),
+.markdown :global(.hljs-selector-class),
+.markdown :global(.hljs-selector-id) {
+  color: #005cc5;
+}
+
+.markdown :global(.hljs-string),
+.markdown :global(.hljs-regexp),
+.markdown :global(.hljs-meta .hljs-string) {
+  color: #032f62;
+}
+
+.markdown :global(.hljs-built_in),
+.markdown :global(.hljs-symbol) {
+  color: #e36209;
+}
+
+.markdown :global(.hljs-name),
+.markdown :global(.hljs-selector-tag),
+.markdown :global(.hljs-selector-pseudo),
+.markdown :global(.hljs-section) {
+  color: #22863a;
+}
+
+.markdown :global(.hljs-subst) {
+  color: var(--text-regular);
+}
+
+.markdown :global(.hljs-bullet),
+.markdown :global(.hljs-link),
+.markdown :global(.hljs-params),
+.markdown :global(.hljs-property) {
+  color: #005cc5;
+}
+
+.markdown :global(.hljs-addition) {
+  background: #f0fff4;
+  color: #22863a;
+}
+
+.markdown :global(.hljs-deletion) {
+  background: #ffeef0;
+  color: #b31d28;
+}
+
+/* 暗色 token（参照 highlight.js github-dark 主题） */
+
+:global(:root[data-theme="dark"]) .markdown :global(.hljs-comment),
+:global(:root[data-theme="dark"]) .markdown :global(.hljs-quote) {
+  color: #8b949e;
+}
+
+:global(:root[data-theme="dark"]) .markdown :global(.hljs-keyword),
+:global(:root[data-theme="dark"]) .markdown :global(.hljs-doctag),
+:global(:root[data-theme="dark"]) .markdown :global(.hljs-template-tag),
+:global(:root[data-theme="dark"]) .markdown :global(.hljs-template-variable),
+:global(:root[data-theme="dark"]) .markdown :global(.hljs-type),
+:global(:root[data-theme="dark"]) .markdown :global(.hljs-variable.language_) {
+  color: #ff7b72;
+}
+
+:global(:root[data-theme="dark"]) .markdown :global(.hljs-title),
+:global(:root[data-theme="dark"]) .markdown :global(.hljs-title.class_),
+:global(:root[data-theme="dark"]) .markdown :global(.hljs-title.function_) {
+  color: #d2a8ff;
+}
+
+:global(:root[data-theme="dark"]) .markdown :global(.hljs-attr),
+:global(:root[data-theme="dark"]) .markdown :global(.hljs-attribute),
+:global(:root[data-theme="dark"]) .markdown :global(.hljs-literal),
+:global(:root[data-theme="dark"]) .markdown :global(.hljs-meta),
+:global(:root[data-theme="dark"]) .markdown :global(.hljs-number),
+:global(:root[data-theme="dark"]) .markdown :global(.hljs-operator),
+:global(:root[data-theme="dark"]) .markdown :global(.hljs-variable),
+:global(:root[data-theme="dark"]) .markdown :global(.hljs-selector-attr),
+:global(:root[data-theme="dark"]) .markdown :global(.hljs-selector-class),
+:global(:root[data-theme="dark"]) .markdown :global(.hljs-selector-id) {
+  color: #79c0ff;
+}
+
+:global(:root[data-theme="dark"]) .markdown :global(.hljs-string),
+:global(:root[data-theme="dark"]) .markdown :global(.hljs-regexp),
+:global(:root[data-theme="dark"]) .markdown :global(.hljs-meta .hljs-string) {
+  color: #a5d6ff;
+}
+
+:global(:root[data-theme="dark"]) .markdown :global(.hljs-built_in),
+:global(:root[data-theme="dark"]) .markdown :global(.hljs-symbol) {
+  color: #ffa657;
+}
+
+:global(:root[data-theme="dark"]) .markdown :global(.hljs-name),
+:global(:root[data-theme="dark"]) .markdown :global(.hljs-selector-tag),
+:global(:root[data-theme="dark"]) .markdown :global(.hljs-selector-pseudo),
+:global(:root[data-theme="dark"]) .markdown :global(.hljs-section) {
+  color: #7ee787;
+}
+
+:global(:root[data-theme="dark"]) .markdown :global(.hljs-bullet),
+:global(:root[data-theme="dark"]) .markdown :global(.hljs-link),
+:global(:root[data-theme="dark"]) .markdown :global(.hljs-params),
+:global(:root[data-theme="dark"]) .markdown :global(.hljs-property) {
+  color: #79c0ff;
+}
+
+:global(:root[data-theme="dark"]) .markdown :global(.hljs-addition) {
+  background: #033a16;
+  color: #aff5b4;
+}
+
+:global(:root[data-theme="dark"]) .markdown :global(.hljs-deletion) {
+  background: #67060c;
+  color: #ffdcd7;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeletonLine {
+    animation: none;
+  }
+
+  .markdown {
+    transition: none;
+  }
+}
