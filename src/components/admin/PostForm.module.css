@@ -19,14 +19,19 @@
 
 /* ------------------------------ 编辑器 ------------------------------ */
 
+/*
+ * 编辑器卡片是一条纵向 flex 链：
+ *   .editor（column，固定高度）
+ *     ├─ .editorHead / .viewBar / .editorFoot  →  flex: none，按内容占位
+ *     └─ .editorBody                          →  flex: 1，吃掉剩余高度
+ * 高度直接给在卡片上（而不是用 :has() 按视图分别压），三种视图高度一致，
+ * 切换视图时页面不会跳；内部各自滚动。
+ */
 .editor {
+  display: flex;
+  flex-direction: column;
+  height: min(760px, calc(100vh - 200px));
   overflow: hidden;
-}
-
-/* 分屏 / 纯预览模式下把卡片高度固定，让两侧各自内部滚动 */
-.editor:has(.editorBody[data-view="split"]),
-.editor:has(.editorBody[data-view="preview"]) {
-  height: min(760px, calc(100vh - 210px));
 }
 
 .editorHead {
@@ -115,9 +120,15 @@
 
 /* ------------------------------ 编辑区主体 ------------------------------ */
 
+/*
+ * flex: 1 → 吃掉卡片剩余高度；内层用 grid 分栏。
+ * 必须写 min-height: 0：flex 子项默认 min-height: auto，不写的话
+ * 内部可滚动区域会把容器顶高，撑破卡片。
+ */
 .editorBody {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
+  flex: 1;
   min-height: 0;
   background: var(--bg-container);
 }
@@ -133,12 +144,14 @@
   overflow: hidden;
 }
 
-/* 渲染器 chunk 加载中的占位 */
+/* 渲染器 chunk 加载中的占位：撑满预览窗格 */
 .previewSkeleton {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  height: 100%;
   padding: 22px;
+  overflow: hidden;
 }
 
 .previewSkeletonBlock {
@@ -165,10 +178,15 @@
   }
 }
 
+/*
+ * textarea 在三种视图下都撑满编辑区并内部滚动：
+ * 高度由 flex 链条决定，所以 resize 关掉 —— 让用户手动拖高度会和 flex 打架。
+ */
 .textarea {
   display: block;
   width: 100%;
-  min-height: 460px;
+  height: 100%;
+  min-height: 0;
   padding: 18px;
   border: 0;
   background: var(--bg-container);
@@ -176,16 +194,8 @@
   font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Microsoft YaHei", monospace;
   font-size: 13.5px;
   line-height: 1.85;
-  resize: vertical;
-  outline: none;
-}
-
-/* 分屏 / 纯预览时高度由卡片决定，撑满即可 */
-.editorBody[data-view="split"] .textarea,
-.editorBody[data-view="preview"] .textarea {
-  min-height: 0;
-  height: 100%;
   resize: none;
+  outline: none;
 }
 
 .textarea::placeholder {
@@ -302,15 +312,27 @@
     position: static;
   }
 
-  .textarea {
-    min-height: 340px;
+  /* 右侧信息栏折到下方后垂直空间更紧张，编辑器跟着矮一点 */
+  .editor {
+    height: min(700px, calc(100vh - 260px));
   }
 }
 
-/* 窄屏放不下左右分屏：改成上下堆叠，并取消固定高度 */
+/*
+ * 窄屏：分屏改成上下堆叠，各自给固定高度
+ * 此时 .editor 不再固定高度（内容自然撑开，整页滚动），所以要把 flex 链条解开，
+ * 否则两个子项会被挤在半屏高度里。
+ */
 @media (max-width: 900px) {
+  /* 解开 flex 链条：内容自然撑开，整页滚动 */
+  .editor {
+    display: block;
+    height: auto;
+  }
+
   .editorBody[data-view="split"] {
     grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: 420px 460px;
   }
 
   .editorBody[data-view="split"] .previewPane {
@@ -318,18 +340,12 @@
     border-top: var(--divider);
   }
 
-  .editor:has(.editorBody[data-view="split"]),
-  .editor:has(.editorBody[data-view="preview"]) {
-    height: auto;
-  }
-
-  .editorBody[data-view="split"] .textarea {
-    height: auto;
-    min-height: 280px;
+  .textarea {
+    height: 420px;
     resize: vertical;
   }
 
-  .previewPane {
+  .editorBody[data-view="preview"] .previewPane {
     height: 520px;
   }
 
