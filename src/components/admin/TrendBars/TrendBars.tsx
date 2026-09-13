@@ -1,5 +1,5 @@
 import styles from "./TrendBars.module.css";
-import { TrendIcon } from "./icons";
+import { TrendIcon } from "../icons";
 
 /** 迷你趋势柱状图（纯 CSS，服务端组件即可） */
 const TrendBars = ({ data }: { data: { label: string; value: number }[] }) => {

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
 
-import PostsTable from "@/components/admin/PostsTable";
+import { PostsTable } from "@/components/admin/PostsTable";
 import { AlertIcon, CirclePlusIcon, InboxIcon, SearchIcon } from "@/components/admin/icons";
 import { getPostList, POSTS_PAGE_SIZE } from "@/server/posts";
 import SortSelect from "./SortSelect";
@@ -14,7 +14,7 @@ import {
   type PostsQuery,
   type RawSearchParams,
 } from "./query";
-import { TableSkeleton } from "../skeletons";
+import { TableSkeleton } from "@/app/admin/skeletons";
 import "../dashboard.css";
 import "./posts.css";
 

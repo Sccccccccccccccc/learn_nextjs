@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import PostForm from "@/components/admin/PostForm";
+import { PostForm } from "@/components/admin/PostForm";
 import { createPost } from "@/server/actions";
 
 export const metadata: Metadata = {

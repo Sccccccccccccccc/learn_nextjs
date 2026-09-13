@@ -9,7 +9,7 @@ import {
   SettingsIcon,
   TrendIcon,
   UserIcon,
-} from "./icons";
+} from "../icons";
 
 export type AdminMenuItem = {
   label: string;
@@ -192,5 +192,3 @@ export const isMenuItemActive = (
       return false;
   }
 };
-
-export const SettingsMenuIcon = <SettingsIcon size={16} />;

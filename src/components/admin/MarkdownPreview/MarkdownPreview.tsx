@@ -3,7 +3,7 @@
 import { memo, useDeferredValue } from "react";
 import ReactMarkdown, { type Components } from "react-markdown";
 
-import { REMARK_PLUGINS, REHYPE_PLUGINS } from "./markdown-config";
+import { REMARK_PLUGINS, REHYPE_PLUGINS } from "../markdown-config";
 import styles from "./MarkdownPreview.module.css";
 
 /**

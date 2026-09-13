@@ -4,9 +4,9 @@ import Link from "next/link";
 import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 
-import PostRowActions from "@/components/admin/PostRowActions";
-import PostStatusTag from "@/components/admin/PostStatusTag";
-import { formatDateTime, formatRelative } from "@/components/admin/format";
+import { PostRowActions } from "../PostRowActions";
+import { PostStatusTag } from "../PostStatusTag";
+import { formatDateTime, formatRelative } from "../format";
 import { setPostPublished } from "@/server/actions";
 import type { PostListItem } from "@/server/posts";
 

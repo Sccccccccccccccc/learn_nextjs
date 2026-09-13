@@ -4,9 +4,9 @@ import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
-import { useAdminSession } from "./SessionProvider";
-import { useColorMode, type ColorMode } from "./useColorMode";
-import { resolveBreadcrumb } from "./menu";
+import { useAdminSession } from "../SessionProvider";
+import { useColorMode, type ColorMode } from "../useColorMode";
+import { resolveBreadcrumb } from "../menu";
 import {
   BellIcon,
   ChevronDownIcon,
@@ -17,7 +17,7 @@ import {
   SearchIcon,
   SunIcon,
   UserIcon,
-} from "./icons";
+} from "../icons";
 import styles from "./AdminHeader.module.css";
 
 const THEME_OPTIONS: { value: ColorMode; label: string; icon: React.ReactNode }[] = [

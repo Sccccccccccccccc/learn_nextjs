@@ -2,12 +2,12 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
 
-import PostForm from "@/components/admin/PostForm";
-import PostRowActions from "@/components/admin/PostRowActions";
+import { PostForm } from "@/components/admin/PostForm";
+import { PostRowActions } from "@/components/admin/PostRowActions";
 import { AlertIcon } from "@/components/admin/icons";
 import { updatePost } from "@/server/actions";
 import { getPostById } from "@/server/posts";
-import { TableSkeleton } from "../../../skeletons";
+import { TableSkeleton } from "@/app/admin/skeletons";
 import "../../../dashboard.css";
 import "../../posts.css";
 

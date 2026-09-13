@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import MainNav from "@/components/MainNav/MainNav";
+import { MainNav } from "@/components/MainNav";
 export const metadata: Metadata = {
   title: "Home",
 };

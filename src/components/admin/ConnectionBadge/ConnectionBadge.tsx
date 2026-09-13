@@ -2,8 +2,8 @@ import { connection } from "next/server";
 
 import { getDatabaseHealth } from "@/server/posts";
 import styles from "./ConnectionBadge.module.css";
-import { AlertIcon, ShieldIcon } from "./icons";
-import { formatCompact } from "./format";
+import { AlertIcon, ShieldIcon } from "../icons";
+import { formatCompact } from "../format";
 
 /**
  * 数据库连接状态徽标（服务端组件）

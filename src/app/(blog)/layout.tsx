@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import GeometricBackground from "@/components/GeometricBackground";
-import Footer from "@/components/Footer";
+import { GeometricBackground } from "@/components/GeometricBackground";
+import { Footer } from "@/components/Footer";
 
 export const metadata: Metadata = {
   title: "首页",

@@ -3,8 +3,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
-import { RefreshIcon } from "./icons";
-import { resolveRouteTitle } from "./menu";
+import { RefreshIcon } from "../icons";
+import { resolveRouteTitle } from "../menu";
 import styles from "./AdminTabBar.module.css";
 
 type Tab = {

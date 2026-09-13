@@ -2,10 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
 
-import ConnectionBadge from "@/components/admin/ConnectionBadge";
-import PostRowActions from "@/components/admin/PostRowActions";
-import PostStatusTag from "@/components/admin/PostStatusTag";
-import TrendBars from "@/components/admin/TrendBars";
+import { ConnectionBadge } from "@/components/admin/ConnectionBadge";
+import { PostRowActions } from "@/components/admin/PostRowActions";
+import { PostStatusTag } from "@/components/admin/PostStatusTag";
+import { TrendBars } from "@/components/admin/TrendBars";
 import {
   AlertIcon,
   CirclePlusIcon,
@@ -18,7 +18,7 @@ import {
 } from "@/components/admin/icons";
 import { formatCompact, formatRelative, shortId } from "@/components/admin/format";
 import { getDashboardStats, getRecentPostsForDashboard } from "@/server/posts";
-import { DashboardSkeleton, TableSkeleton } from "./skeletons";
+import { DashboardSkeleton, TableSkeleton } from "@/app/admin/skeletons";
 import "./dashboard.css";
 
 export const metadata: Metadata = {

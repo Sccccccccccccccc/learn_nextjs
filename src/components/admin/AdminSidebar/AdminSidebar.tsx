@@ -3,8 +3,8 @@
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 
-import { ADMIN_MENU, isMenuItemActive } from "./menu";
-import { ExternalIcon, LogoIcon } from "./icons";
+import { ADMIN_MENU, isMenuItemActive } from "../menu";
+import { ExternalIcon, LogoIcon } from "../icons";
 import styles from "./AdminSidebar.module.css";
 
 const AdminSidebar = () => {

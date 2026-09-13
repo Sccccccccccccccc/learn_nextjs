@@ -4,8 +4,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Suspense, lazy, useState, useMemo, useTransition } from "react";
 
-import { countWords, formatDateTime } from "./format";
-import { AlertIcon, ChevronLeftIcon, DocumentIcon, ExternalIcon } from "./icons";
+import { countWords, formatDateTime } from "../format";
+import { AlertIcon, ChevronLeftIcon, DocumentIcon, ExternalIcon } from "../icons";
 import type { ActionResult } from "@/server/actions";
 import styles from "./PostForm.module.css";
 
@@ -15,7 +15,9 @@ import styles from "./PostForm.module.css";
  * 等于把 320KB 的渲染器（react-markdown + highlight.js）提前拉下来。
  * React.lazy 只在组件真正首次渲染时才触发 import，不写文章预览就不会下载。
  */
-const MarkdownPreview = lazy(() => import("./MarkdownPreview"));
+const MarkdownPreview = lazy(() =>
+  import("../MarkdownPreview").then((mod) => ({ default: mod.MarkdownPreview })),
+);
 
 type SaveAction = (formData: FormData) => Promise<ActionResult>;
 

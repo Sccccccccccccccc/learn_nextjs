@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 
-import { SparkIcon } from "./icons";
+import { SparkIcon } from "../icons";
 
 /** 「待开发」占位卡片：把还没实现的入口留出位置，点进来不至于 404 */
 const PlaceholderPage = ({

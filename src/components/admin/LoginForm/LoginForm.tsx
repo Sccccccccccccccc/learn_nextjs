@@ -6,7 +6,7 @@ import { useFormStatus } from "react-dom";
 
 import { login } from "@/server/auth-actions";
 import { DEMO_ACCOUNT, type LoginState } from "@/server/auth-shared";
-import { AlertIcon, LogoIcon, ShieldIcon } from "@/components/admin/icons";
+import { AlertIcon, LogoIcon, ShieldIcon } from "../icons";
 import styles from "./LoginForm.module.css";
 
 const initialState: LoginState = {};

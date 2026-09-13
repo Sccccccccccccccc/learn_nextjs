@@ -1,4 +1,4 @@
-import "./dashboard.css";
+import "../dashboard.css";
 
 /**
  * 工作台的骨架屏与页面级样式

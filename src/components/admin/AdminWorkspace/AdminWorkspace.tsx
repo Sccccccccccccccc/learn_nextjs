@@ -3,10 +3,10 @@
 import { Suspense } from "react";
 import type { ReactNode } from "react";
 
-import AdminHeader from "./AdminHeader";
-import AdminSidebar from "./AdminSidebar";
-import AdminTabBar from "./AdminTabBar";
-import { AdminSessionProvider, type AdminSession } from "./SessionProvider";
+import { AdminHeader } from "../AdminHeader";
+import { AdminSidebar } from "../AdminSidebar";
+import { AdminTabBar } from "../AdminTabBar";
+import { AdminSessionProvider, type AdminSession } from "../SessionProvider";
 import styles from "./AdminWorkspace.module.css";
 
 /**

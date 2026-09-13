@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import PlaceholderPage from "@/components/admin/PlaceholderPage";
+import { PlaceholderPage } from "@/components/admin/PlaceholderPage";
 import { TrendIcon } from "@/components/admin/icons";
 import "../dashboard.css";
 
