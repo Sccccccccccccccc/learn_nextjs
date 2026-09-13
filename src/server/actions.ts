@@ -4,14 +4,17 @@ import { updateTag } from "next/cache";
 import { redirect } from "next/navigation";
 
 import prisma from "@/lib/prisma";
+import { ARTICLES_TAG } from "@/lib/articles";
 import { POSTS_TAG } from "./posts";
 
 /**
  * 文章写操作（React Server Functions / Server Actions）
  * ---------------------------------------------------------------------------
  * 只在服务端执行，客户端通过表单 action 或事件回调调用。
- * 每次写入后调用 updateTag('posts')：读取层带 `use cache` + cacheTag('posts')，
- * 这里立即失效，保证「写完后看到的立刻是新数据」。
+ * 每次写入后失效两个缓存标签：
+ *   - posts：后台列表 / 详情 / 统计（src/server/posts.ts）
+ *   - articles：前台文章列表（src/lib/articles.ts，只查 published 的文章）
+ * 两者查的是同一张表但缓存键不同，只失效一个会出现「后台更新了、前台还是旧的」。
  *
  * 鉴权说明：初始化版本还没有登录态，先以「第一位用户」作为默认作者；
  * 接入鉴权后请把 resolveAuthorId() 换成从会话中取用户，并在每个 action 里
@@ -19,6 +22,12 @@ import { POSTS_TAG } from "./posts";
  */
 
 export type ActionResult = { ok: true } | { ok: false; error: string };
+
+/** 写入后统一失效受影响的缓存 */
+const revalidatePostViews = () => {
+  updateTag(POSTS_TAG);
+  updateTag(ARTICLES_TAG);
+};
 
 const isNonEmpty = (value: FormDataEntryValue | null): value is string =>
   typeof value === "string" && value.trim().length > 0;
@@ -74,7 +83,7 @@ export const createPost = async (formData: FormData): Promise<ActionResult> => {
     return handleError("createPost", error);
   }
 
-  updateTag(POSTS_TAG);
+  revalidatePostViews();
   redirect(`/admin/posts/${postId}/edit?saved=created`);
 };
 
@@ -98,7 +107,7 @@ export const updatePost = async (id: string, formData: FormData): Promise<Action
     return handleError("updatePost", error);
   }
 
-  updateTag(POSTS_TAG);
+  revalidatePostViews();
   return { ok: true };
 };
 
@@ -110,7 +119,7 @@ export const setPostPublished = async (id: string, published: boolean): Promise<
     return handleError("setPostPublished", error);
   }
 
-  updateTag(POSTS_TAG);
+  revalidatePostViews();
   return { ok: true };
 };
 
@@ -122,6 +131,6 @@ export const deletePost = async (id: string): Promise<ActionResult> => {
     return handleError("deletePost", error);
   }
 
-  updateTag(POSTS_TAG);
+  revalidatePostViews();
   return { ok: true };
 };
