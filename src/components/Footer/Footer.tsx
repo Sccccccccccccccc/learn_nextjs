@@ -10,5 +10,5 @@ export default function Footer() {
     setYear(String(new Date().getFullYear()));
   }, []);
 
-  return <footer className={styles.footer}>© {year} MY-APP</footer>;
+  return <footer className={styles.footer}>© {year} footer </footer>;
 }

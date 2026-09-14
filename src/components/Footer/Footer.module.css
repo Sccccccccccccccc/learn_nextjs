@@ -1,7 +1,7 @@
 .footer {
   position: fixed;
   left: 50%;
-  bottom: 1.25rem;
+  bottom: 0.25rem;
   transform: translateX(-50%);
   z-index: 5;
   opacity: 0.6;
