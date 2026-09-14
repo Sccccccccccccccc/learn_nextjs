@@ -1,12 +1,10 @@
-"use client";
-
 import type { Options as RehypeHighlightOptions } from "rehype-highlight";
 import rehypeHighlight from "rehype-highlight";
 import remarkGfm from "remark-gfm";
 import type { PluggableList } from "unified";
 
 /**
- * Markdown 渲染配置（编辑器与懒加载包装共用）
+ * Markdown 渲染配置（后台预览与前台详情页共用）
  * ---------------------------------------------------------------------------
  * 刻意不引入 `rehype-raw`：它会把正文里的内联 HTML 真正解析执行，一旦开放投稿
  * 就是存储型 XSS 的现成入口。react-markdown 默认输出 React 元素、不经过
@@ -22,6 +20,13 @@ import type { PluggableList } from "unified";
  * 类型说明：这里只从 `unified` / `rehype-highlight` 引入 **类型**，值仍然只有
  * remark-gfm 与 rehype-highlight 两个插件，所以本模块被 PostForm 静态引入时
  * 不会把渲染器本体带进首屏 chunk（真正的渲染器在 PostForm 里用 React.lazy 拆出去）。
+ *
+ * 为什么没有 "use client"：这份配置现在有两个消费者 ——
+ *   - 后台预览 MarkdownPreview（客户端组件，import 进来即进客户端 chunk）
+ *   - 前台详情 ArticleContent（服务端组件，用 react-markdown 的 MarkdownAsync 渲染，
+ *     正文直接出现在服务端产出的 HTML 里，前台一个字节的 markdown 运行时都不用下载）
+ * 指令本身不带任何副作用（本模块无 hooks / JSX），去掉它才能让服务端组件拿到
+ * 真正的插件数组而不是客户端引用；插件清单只此一份，前后台不会各写一套慢慢跑偏。
  */
 
 /** 自动识别时优先尝试的语言：博客里最常见的一批 */

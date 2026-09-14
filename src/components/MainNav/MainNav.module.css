@@ -25,6 +25,13 @@
   user-select: none;
 }
 
+/* <MainNav /> 的 Suspense 占位：盒子沿用 .nav（上下 padding 1.5rem、宽度撑满），
+   这里只把「一行菜单项的高度」补回来（.menuItem 的 line-height 是 1.75rem），
+   导航流式补上时高度不变，下面的内容不会被顶一下 */
+.placeholder {
+  min-height: 4.75rem;
+}
+
 .menuItem {
   position: relative;
   /* 建立层叠上下文，让 ::before 的 z-index:-1 只压在自己文字底下 */

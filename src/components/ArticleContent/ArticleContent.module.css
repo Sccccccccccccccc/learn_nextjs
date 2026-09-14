@@ -1,0 +1,364 @@
+/**
+ * 文章正文排版（前台详情页）
+ * ---------------------------------------------------------------------------
+ * 底色是常暗的卡片 #1E2939，所以这里写死一套暗色配色，不跟 tokens.css 的
+ * 亮/暗主题走（那套是给后台的浅色界面用的）。换肤只需要改下面这几个变量。
+ *
+ * 代码高亮 token 配色对齐 highlight.js 的 github-dark 主题，
+ * 这样正文里的代码块和「深色底 + 蓝色强调」的卡片是一套观感。
+ */
+
+.article {
+  /* 配色令牌：与 ArticleItem / postList 的卡片同一套色 */
+  --prose-text: #cbd5e1;
+  --prose-heading: #e5eaf3;
+  --prose-muted: #94a3b8;
+  --prose-border: rgba(148, 163, 184, 0.28);
+  --prose-link: #93c5fd;
+  --prose-accent: #60a5fa;
+  --prose-code-bg: rgba(15, 23, 42, 0.7);
+  --prose-pre-bg: #0b1220;
+  --prose-table-head: rgba(255, 255, 255, 0.04);
+  --prose-table-stripe: rgba(255, 255, 255, 0.02);
+
+  min-width: 0;
+  color: var(--prose-text);
+  font-size: 1rem;
+  line-height: 1.9;
+  /* 正文里的长 URL / 长单词不许把卡片撑破 */
+  overflow-wrap: break-word;
+}
+
+.empty {
+  margin: 0;
+  padding: 3rem 0;
+  text-align: center;
+  color: var(--prose-muted, #94a3b8);
+}
+
+/* 首尾元素不额外留白：外层卡片已经给了 padding */
+.article > :first-child {
+  margin-top: 0;
+}
+
+.article > :last-child {
+  margin-bottom: 0;
+}
+
+/* ------------------------------ 段落与标题 ------------------------------ */
+
+.article p {
+  margin: 0 0 1rem;
+}
+
+.article h1,
+.article h2,
+.article h3,
+.article h4,
+.article h5,
+.article h6 {
+  margin: 2rem 0 0.75rem;
+  color: var(--prose-heading);
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.article h1 {
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--prose-border);
+  font-size: 1.75rem;
+}
+
+.article h2 {
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid var(--prose-border);
+  font-size: 1.5rem;
+}
+
+.article h3 {
+  font-size: 1.25rem;
+}
+
+.article h4 {
+  font-size: 1.05rem;
+}
+
+.article h5,
+.article h6 {
+  font-size: 1rem;
+  color: var(--prose-text);
+}
+
+.article strong {
+  color: var(--prose-heading);
+  font-weight: 700;
+}
+
+.article em {
+  font-style: italic;
+}
+
+.article del {
+  color: var(--prose-muted);
+}
+
+/* ------------------------------ 链接与分割线 ------------------------------ */
+
+.article a {
+  color: var(--prose-link);
+  text-decoration: underline;
+  text-decoration-color: rgba(147, 197, 253, 0.45);
+  text-underline-offset: 3px;
+  transition: color 0.2s linear, text-decoration-color 0.2s linear;
+}
+
+.article a:hover {
+  color: #bfdbfe;
+  text-decoration-color: currentcolor;
+}
+
+.article hr {
+  margin: 2rem 0;
+  border: 0;
+  border-top: 1px solid var(--prose-border);
+}
+
+/* ------------------------------ 列表 ------------------------------ */
+
+.article ul,
+.article ol {
+  margin: 0 0 1rem;
+  padding-left: 1.5rem;
+}
+
+.article li + li {
+  margin-top: 0.35rem;
+}
+
+.article li > ul,
+.article li > ol {
+  margin: 0.35rem 0 0;
+}
+
+.article li::marker {
+  color: var(--prose-accent);
+}
+
+/* GFM 任务列表：去掉项目符号，把复选框提出来对齐 */
+.article li:has(> input[type="checkbox"]) {
+  list-style: none;
+  margin-left: -1.25rem;
+}
+
+.article input[type="checkbox"] {
+  width: 0.9rem;
+  height: 0.9rem;
+  margin-right: 0.4rem;
+  vertical-align: -2px;
+  accent-color: var(--prose-accent);
+}
+
+/* ------------------------------ 引用 ------------------------------ */
+
+.article blockquote {
+  margin: 0 0 1rem;
+  padding: 0.6rem 1rem;
+  border-left: 3px solid var(--prose-accent);
+  border-radius: 0 0.75rem 0.75rem 0;
+  background: rgba(96, 165, 250, 0.08);
+  color: var(--prose-muted);
+}
+
+.article blockquote > :last-child {
+  margin-bottom: 0;
+}
+
+/* ------------------------------ 代码 ------------------------------ */
+
+/* 行内代码：只做底色区分，不参与语法高亮 */
+.article :not(pre) > code {
+  padding: 0.15rem 0.4rem;
+  border: 1px solid var(--prose-border);
+  border-radius: 0.375rem;
+  background: var(--prose-code-bg);
+  color: #fca5a5;
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 0.875em;
+}
+
+.article pre {
+  margin: 0 0 1.25rem;
+  padding: 1rem 1.15rem;
+  border: 1px solid var(--prose-border);
+  border-radius: 0.75rem;
+  background: var(--prose-pre-bg);
+  overflow-x: auto;
+  line-height: 1.7;
+}
+
+.article pre code {
+  display: block;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 0.875rem;
+  white-space: pre;
+}
+
+.article kbd {
+  padding: 0.1rem 0.4rem;
+  border: 1px solid var(--prose-border);
+  border-bottom-width: 2px;
+  border-radius: 0.375rem;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--prose-heading);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.85em;
+}
+
+/* ------------------------------ 表格（GFM） ------------------------------ */
+
+.article table {
+  display: block;
+  width: max-content;
+  max-width: 100%;
+  margin: 0 0 1.25rem;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid var(--prose-border);
+  border-radius: 0.75rem;
+  overflow-x: auto;
+  font-size: 0.9rem;
+}
+
+.article th,
+.article td {
+  padding: 0.5rem 0.85rem;
+  border-bottom: 1px solid var(--prose-border);
+  text-align: left;
+}
+
+.article th {
+  background: var(--prose-table-head);
+  color: var(--prose-heading);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.article tbody tr:nth-child(even) td {
+  background: var(--prose-table-stripe);
+}
+
+.article tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+/* ------------------------------ 图片 ------------------------------ */
+
+.article img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.75rem;
+}
+
+/* ------------------------------ 代码高亮（github-dark） ------------------------------ */
+
+.article :global(.hljs-comment),
+.article :global(.hljs-quote) {
+  color: #8b949e;
+  font-style: italic;
+}
+
+.article :global(.hljs-keyword),
+.article :global(.hljs-doctag),
+.article :global(.hljs-template-tag),
+.article :global(.hljs-template-variable),
+.article :global(.hljs-type),
+.article :global(.hljs-variable.language_) {
+  color: #ff7b72;
+}
+
+.article :global(.hljs-title),
+.article :global(.hljs-title.class_),
+.article :global(.hljs-title.function_) {
+  color: #d2a8ff;
+}
+
+.article :global(.hljs-attr),
+.article :global(.hljs-attribute),
+.article :global(.hljs-literal),
+.article :global(.hljs-meta),
+.article :global(.hljs-number),
+.article :global(.hljs-operator),
+.article :global(.hljs-variable),
+.article :global(.hljs-selector-attr),
+.article :global(.hljs-selector-class),
+.article :global(.hljs-selector-id) {
+  color: #79c0ff;
+}
+
+.article :global(.hljs-string),
+.article :global(.hljs-regexp),
+.article :global(.hljs-meta .hljs-string) {
+  color: #a5d6ff;
+}
+
+.article :global(.hljs-built_in),
+.article :global(.hljs-symbol) {
+  color: #ffa657;
+}
+
+.article :global(.hljs-name),
+.article :global(.hljs-selector-tag),
+.article :global(.hljs-selector-pseudo),
+.article :global(.hljs-section) {
+  color: #7ee787;
+}
+
+.article :global(.hljs-subst) {
+  color: var(--prose-text);
+}
+
+.article :global(.hljs-bullet),
+.article :global(.hljs-link),
+.article :global(.hljs-params),
+.article :global(.hljs-property) {
+  color: #79c0ff;
+}
+
+.article :global(.hljs-addition) {
+  background: #033a16;
+  color: #aff5b4;
+}
+
+.article :global(.hljs-deletion) {
+  background: #67060c;
+  color: #ffdcd7;
+}
+
+/* ------------------------------ 窄屏 ------------------------------ */
+
+@media (max-width: 640px) {
+  .article {
+    font-size: 0.95rem;
+    line-height: 1.85;
+  }
+
+  .article h1 {
+    font-size: 1.5rem;
+  }
+
+  .article h2 {
+    font-size: 1.3rem;
+  }
+
+  .article h3 {
+    font-size: 1.12rem;
+  }
+
+  .article pre {
+    padding: 0.85rem 0.9rem;
+  }
+}

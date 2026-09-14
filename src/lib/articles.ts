@@ -1,10 +1,14 @@
 import { cacheLife, cacheTag } from "next/cache";
 
 import type { ArticleItemData } from "@/components/ArticleItem";
+import { countWords } from "@/components/admin/format";
 import prisma from "@/lib/prisma";
 
 /** 摘要截断长度（按字符算，中文和英文都按字符数） */
 const EXCERPT_LENGTH = 120;
+
+/** 估算阅读时长的基准速度（字/分钟），中文阅读取 350 左右；结果至少 1 分钟 */
+const READING_WORDS_PER_MINUTE = 350;
 
 /** Post.content 是富文本/markdown，先剥标签压成纯文本，再截断 */
 function toExcerpt(content: string | null): string | null {
@@ -59,4 +63,68 @@ export async function getArticles(): Promise<ArticleItemData[]> {
     date: toDate(post.createdAt),
     // tags / viewCount / commentCount / image：schema 里还没有这些字段，先不传（组件有值才渲染）
   }));
+}
+
+/** 详情页数据。列表项那套字段之外，多了正文与作者信息。 */
+export type ArticleDetail = {
+  id: string;
+  title: string;
+  /** 原始 markdown 正文，渲染交给 <ArticleContent /> */
+  content: string;
+  /** 摘要（列表页同一套截断规则），详情页拿它当 meta description */
+  excerpt: string;
+  date: string;
+  /** 最后一次修改的日期，和 date 相同则不展示 */
+  updatedDate: string;
+  authorName: string;
+  /** 预计阅读时长（分钟） */
+  readingMinutes: number;
+};
+
+/**
+ * 单篇文章详情（前台动态路由 /blog/[id] 用）。
+ * ---------------------------------------------------------------------------
+ * - 和列表一样走 "use cache" + ARTICLES_TAG：正文不随请求变化，缓存住之后
+ *   构建期预渲染的静态页里直接带着正文；构建之后才发布的文章按需渲染一次、
+ *   结果同样存下来。后台写入时 actions.ts 会 updateTag ARTICLES_TAG，
+ *   所以「刚改完的文章」不会读到旧缓存。
+ * - where 里带上 published: true —— 草稿的 id 即使被人猜到并直接敲进地址栏，
+ *   也只会拿到 null（页面据此走 notFound()），不会把未发布正文漏出去。
+ * - 这里不吞异常：数据库挂了就让错误冒到 error 边界，别伪装成「文章不存在」。
+ */
+export async function getArticleById(id: string): Promise<ArticleDetail | null> {
+  "use cache";
+  cacheLife("minutes");
+  cacheTag(ARTICLES_TAG);
+
+  const post = await prisma.post.findFirst({
+    where: { id, published: true },
+    select: {
+      id: true,
+      title: true,
+      content: true,
+      createdAt: true,
+      updatedAt: true,
+      author: { select: { name: true, email: true } },
+    },
+  });
+
+  if (!post) return null;
+
+  const content = post.content ?? "";
+  const words = countWords(content);
+
+  return {
+    id: post.id,
+    title: post.title,
+    content,
+    // 本地 toExcerpt 在正文全空时返回 null（列表那边靠「有值才渲染」处理），
+    // 详情页要拿它当 meta description，这里统一成空串
+    excerpt: toExcerpt(content) ?? "",
+    date: toDate(post.createdAt),
+    updatedDate: toDate(post.updatedAt),
+    // 和后台列表一致：没起名字就用邮箱 @ 前面那段
+    authorName: post.author.name?.trim() || post.author.email.split("@")[0],
+    readingMinutes: Math.max(1, Math.round(words / READING_WORDS_PER_MINUTE)),
+  };
 }

@@ -15,7 +15,7 @@ const PostListPage = async ({ params, searchParams }: PageProps<"/postList">) =>
     // h-dvh：把整页做成滚动视口（body 是 overflow: hidden）
     <div className="ListContainer h-dvh">
       {/* 内容列：最宽 1000px，页面居中；窄屏自动收窄（不是固定 1000px） */}
-      <div className="ListContainer__wrapper w-full max-w-[1000px] mx-auto flex flex-col p-[2rem] gap-[0.75rem]">
+      <div className="ListContainer__wrapper w-full h-full max-w-[1000px] mx-auto flex flex-col p-[2rem] gap-[0.75rem]">
         <div
           className="
             ListContainer__header 
@@ -33,7 +33,7 @@ const PostListPage = async ({ params, searchParams }: PageProps<"/postList">) =>
             ListContainer__content
             w-full bg-[#1E2939] rounded-[32px] border-[2px] border-gray-700
             px-[1.25rem] py-[1.25rem] sm:px-[2rem] sm:py-[2rem]
-            flex flex-col gap-y-[1rem]
+            flex flex-col gap-y-[1rem] flex-1
           "
         >
           {articles.length === 0 ? (
