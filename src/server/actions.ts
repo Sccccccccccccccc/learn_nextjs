@@ -42,7 +42,7 @@ const resolveAuthorId = async (): Promise<string> => {
   if (existing) return existing.id;
 
   const created = await prisma.user.create({
-    data: { email: "admin@blog.local", name: "Admin", password: "123456" },
+    data: { email: "admin@blog.local", name: "Admin" },
     select: { id: true },
   });
 
