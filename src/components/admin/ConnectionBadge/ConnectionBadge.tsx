@@ -23,7 +23,7 @@ const ConnectionBadge = async () => {
       <span className={styles.dot} />
       {health.ok ? (
         <>
-          <span>数据库已连接</span>
+          <span>数据库已连接{ process.env.ENV_CONSTANT }</span>
           <span className={styles.sep}>·</span>
           <span>{formatCompact(health.posts)} 篇</span>
         </>

@@ -22,7 +22,7 @@ const verifyCredentials = async (email: string, password: string): Promise<boole
   if (email === DEMO_ACCOUNT.email && password === DEMO_ACCOUNT.password) return true;
 
   try {
-    const user = await prisma.user.findUnique({ where: { email }, select: { password: true } });
+    const user = await prisma.user.findUnique({ where: { email }, select: { password: false } });
     return Boolean(user && user.password === password);
   } catch (error) {
     // 数据库不可用时不影响内置演示账号登录
