@@ -1,5 +1,7 @@
 "use server";
 
+import { randomUUID } from "node:crypto";
+
 import { updateTag } from "next/cache";
 import { redirect } from "next/navigation";
 
@@ -42,7 +44,8 @@ const resolveAuthorId = async (): Promise<string> => {
   if (existing) return existing.id;
 
   const created = await prisma.user.create({
-    data: { email: "admin@blog.local", name: "Admin" },
+    // id 由 better-auth 在注册时生成，表列上没有默认值，所以这里必须自己给
+    data: { id: randomUUID(), email: "admin@blog.local", name: "Admin" },
     select: { id: true },
   });
 

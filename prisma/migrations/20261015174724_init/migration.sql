@@ -1,24 +1,12 @@
-/*
-  Warnings:
-
-  - You are about to drop the `User` table. If the table is not empty, all the data it contains will be lost.
-
-*/
--- DropForeignKey
-ALTER TABLE "Post" DROP CONSTRAINT "Post_authorId_fkey";
-
--- DropTable
-DROP TABLE "User";
-
 -- CreateTable
 CREATE TABLE "user" (
     "id" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
     "email" TEXT NOT NULL,
-    "name" TEXT,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
     "emailVerified" BOOLEAN NOT NULL DEFAULT false,
     "image" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "user_pkey" PRIMARY KEY ("id")
 );
@@ -68,6 +56,19 @@ CREATE TABLE "verification" (
     CONSTRAINT "verification_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "post" (
+    "id" TEXT NOT NULL,
+    "title" TEXT NOT NULL,
+    "content" TEXT,
+    "published" BOOLEAN NOT NULL DEFAULT false,
+    "authorId" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "post_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "user_email_key" ON "user"("email");
 
@@ -83,11 +84,14 @@ CREATE INDEX "account_userId_idx" ON "account"("userId");
 -- CreateIndex
 CREATE INDEX "verification_identifier_idx" ON "verification"("identifier");
 
--- AddForeignKey
-ALTER TABLE "Post" ADD CONSTRAINT "Post_authorId_fkey" FOREIGN KEY ("authorId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+-- CreateIndex
+CREATE INDEX "post_authorId_idx" ON "post"("authorId");
 
 -- AddForeignKey
 ALTER TABLE "session" ADD CONSTRAINT "session_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "account" ADD CONSTRAINT "account_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "post" ADD CONSTRAINT "post_authorId_fkey" FOREIGN KEY ("authorId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE;

@@ -1,3 +1,5 @@
+import { randomUUID } from "node:crypto";
+
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 
@@ -37,9 +39,10 @@ export async function POST(request: NextRequest) {
     const { name , email } = await request.json();
     const user = await prisma.user.create({
         data: {
+            // better-auth 自己生成 id，表列上没默认值，裸建用户时要自己给
+            id: randomUUID(),
             name,
             email,
-            password: "123456",
         },
     })
     return NextResponse.json(user);

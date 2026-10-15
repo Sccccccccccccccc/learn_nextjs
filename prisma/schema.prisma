@@ -1,49 +1,65 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
+// Prisma schema —— 对齐 better-auth 1.7.6 运行时导出的核心表结构
+// ---------------------------------------------------------------------------
+// 这份 schema 的目标：Prisma 里的表结构与 better-auth 内部 coreSchema 完全一致，
+// 不再出现「代码里选 user.password，而表里根本没有 password 列」这类漂移。
+//
+// 权威来源（不是文档，是本机安装的包运行时导出的定义）：
+//   node_modules/@better-auth/core/dist/db/get-tables.mjs   → buildAuthTables()
+//   node_modules/better-auth/dist/db/get-schema.mjs         → getSchema()
+// 重新核对可以用： node scripts/dump-auth-schema.mjs
+//
+// 三条硬性约定，改动前务必先看：
+//   1. 模型名必须是 User / Session / Account / Verification。
+//      better-auth 的 prismaAdapter 用逻辑表名（user/session/account/verification）
+//      取客户端委托，Prisma 会把模型名首字母小写成 prisma.user / prisma.session ...
+//      名字对不上就会运行时报 "model not found"。
+//   2. 表名统一小写（@@map），与 better-auth 默认的 modelName 一致。
+//   3. 字段名保持 camelCase —— better-auth 默认的 fieldName 就是 camelCase，
+//      它不会自动帮你映射 snake_case，除非在 auth.ts 里逐个配 fields.xxx.fieldName。
+//
+// 关于 id / createdAt / updatedAt：better-auth 自己生成 id 并显式写入时间戳，
+// 所以这里的 @default / @updatedAt 只是「裸 SQL 写入时」的兜底，不是必需。
+// 邮箱密码登录的密码哈希存在 account.password 里（不是 user.password）。
+// ---------------------------------------------------------------------------
 
 generator client {
   provider = "prisma-client"
-  // 使用的客户端
-  output   = "../src/generated/prisma"
   // 生成客户端代码的目录, 通过命令 npx prisma generate 生成
+  output   = "../src/generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
-  // 数据库类型
+  // 连接串在 prisma7.config.ts 里从 DATABASE_URL 读取
 }
 
 // model 用于定义表结构
-// 定义完成之后使用命令 npx prisma migrate dev --name init 来迁移数据表，以用于同步数据库，其中--name init 代表迁移名称
+// 迁移命令： npx prisma migrate dev --name <描述>
+// 重置并重新灌数据： npx prisma migrate reset
 
+/// better-auth 用户表（逻辑表名 user）
 model User {
-  id            String    @id @default(cuid()) // 主键 修饰符cuid生成规则：时间戳+ 客户端指纹+ 序列号+ 随机数
-  email         String    
-  name          String?
-  posts         Post[]
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  emailVerified Boolean   @default(false)
+  // better-auth 自己生成 id（默认 32 位随机字符串），这里不给 default
+  id            String   @id
+  // name / email 在 better-auth core 里都是 required，不能写成可空
+  name          String
+  email         String
+  emailVerified Boolean  @default(false)
   image         String?
-  sessions      Session[]
-  accounts      Account[]
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
-  @@unique([email]) // 唯一约束
+  sessions Session[]
+  accounts Account[]
+  // 业务侧关联：文章作者
+  posts    Post[]
+
+  @@unique([email])
   @@map("user")
 }
 
-model Post {
-  id        String   @id @default(cuid())
-  title     String
-  content   String?
-  published Boolean  @default(false)
-  // 一对多关联 onDelete: Cascade, onUpdate: Cascade 表示级联删除和级联更新
-  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  authorId  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
+/// better-auth 会话表（逻辑表名 session）
+/// 一行 = 一次登录，cookie 里存的是 token
 model Session {
   id        String   @id
   expiresAt DateTime
@@ -60,6 +76,11 @@ model Session {
   @@map("session")
 }
 
+/// better-auth 账号表（逻辑表名 account）
+/// 一行 = 一个用户的一种登录方式：
+///   providerId = "credential" → 邮箱密码，密码哈希在 password 列
+///   providerId = "github"     → OAuth，令牌在各 token 列
+/// OAuth 的 token 类字段 better-auth 默认不返回给客户端（returned: false）
 model Account {
   id                    String    @id
   accountId             String
@@ -72,6 +93,7 @@ model Account {
   accessTokenExpiresAt  DateTime?
   refreshTokenExpiresAt DateTime?
   scope                 String?
+  /// credential 登录时的密码哈希（better-auth 默认 scrypt），不是明文
   password              String?
   createdAt             DateTime  @default(now())
   updatedAt             DateTime  @updatedAt
@@ -80,6 +102,8 @@ model Account {
   @@map("account")
 }
 
+/// better-auth 验证表（逻辑表名 verification）
+/// 邮箱验证 / 重置密码 / 魔术链接等一次性凭证，value 是签名过的 token
 model Verification {
   id         String   @id
   identifier String
@@ -90,4 +114,21 @@ model Verification {
 
   @@index([identifier])
   @@map("verification")
+}
+
+/// 博客文章表（业务表，不属于 better-auth）
+/// 作者指向 user.id；删用户时文章级联删除
+model Post {
+  id        String   @id @default(cuid())
+  title     String
+  /// markdown 正文，允许为空（新建时先存空串）
+  content   String?
+  published Boolean  @default(false)
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([authorId])
+  @@map("post")
 }

@@ -4,20 +4,28 @@
  * 运行：npx prisma db seed     （等价于 node prisma/seed.mjs）
  *
  * 做两件事：
- *   1. 创建演示账号 admin@blog.local / admin123（与登录页提示一致）
+ *   1. 创建演示账号 admin@blog.local / admin123
  *   2. 创建 3 篇示例文章，让列表 / 筛选 / 仪表盘一上手就有内容
  *
  * 只想建账号、不要示例文章：  SEED_SAMPLE_POSTS=0 npx prisma db seed
+ *
+ * 关于演示账号 —— 必须写成 better-auth 认得的形状，否则登录会「查不到账号」：
+ *   - user  ：id / name / email / emailVerified，name 与 email 都是 NOT NULL
+ *   - account：providerId = "credential"，accountId = user.id（不是邮箱！），
+ *              password = better-auth 自己的 scrypt 哈希（salt:key 格式）
+ *   这套对应关系来自 better-auth 的注册与登录实现：
+ *     dist/api/routes/sign-up.mjs  → linkAccount({ accountId: createdUser.id, password: hash })
+ *     dist/api/routes/sign-in.mjs  → 按 providerId === "credential" && accountId === user.id 查到该行
+ *   所以密码绝不能再明文入库，也绝不能再往 user 表塞 password 列。
  *
  * 说明：这里用 pg 直连而不是 Prisma Client —— 生成的客户端带有无扩展名的
  * 相对导入（如 ./enums），Node 的 ESM 解析器跑不动。要改用 Prisma Client 的话，
  * 装一个 tsx 并把本文件改名为 seed.ts、seed 命令改成 `tsx prisma/seed.ts` 即可。
  * ---------------------------------------------------------------------------
- * ⚠️ 密码目前是明文存的（schema 里 password 是普通 String）。
- *   接入真实鉴权前请换成 bcrypt/argon2 哈希，并同步调整登录校验逻辑。
  */
 import { readFileSync } from "node:fs";
 
+import { hashPassword } from "better-auth/crypto";
 import pg from "pg";
 
 const DEMO_EMAIL = "admin@blog.local";
@@ -76,8 +84,8 @@ const SAMPLES = [
 
 /**
  * 生成主键。
- * schema 里 `@default(cuid())` 是 Prisma 客户端侧生成的，数据库列上没有 DEFAULT，
- * 所以走裸 SQL 插入时必须自己给 id。
+ * better-auth 自己也会生成 id，但这是裸 SQL 直连，绕过它的适配器，
+ * 所以 user / account / post 的 id 都得自己给（列上没有 DEFAULT）。
  */
 const newId = () =>
   `c${Date.now().toString(36)}${Math.random().toString(36).slice(2, 10)}${Math.random()
@@ -86,51 +94,79 @@ const newId = () =>
 
 const client = new pg.Client({ connectionString: resolveDatabaseUrl() });
 
+/** 建（或补齐）演示账号：user 一行 + credential 一行，返回 user.id */
+const ensureDemoAccount = async () => {
+  // 幂等：邮箱已存在就只更新显示名，不动 id（id 被 session/account/post 引用着）
+  const user = await client.query(
+    `insert into "user" (id, name, email, "emailVerified", "createdAt", "updatedAt")
+     values ($1, $2, $3, true, now(), now())
+     on conflict (email) do update set name = excluded.name, "updatedAt" = now()
+     returning id`,
+    [newId(), DEMO_NAME, DEMO_EMAIL],
+  );
+
+  const userId = user.rows[0].id;
+  const password = await hashPassword(DEMO_PASSWORD);
+
+  // account 表在 (providerId, accountId) 上没有唯一约束，所以「先查再写」
+  const existing = await client.query(
+    `select id from "account" where "providerId" = 'credential' and "accountId" = $1`,
+    [userId],
+  );
+
+  if (existing.rowCount > 0) {
+    // 已注册过（比如在登录页点过注册）就只把密码重置回演示密码，保证能登进去
+    await client.query(`update "account" set password = $1, "updatedAt" = now() where id = $2`, [
+      password,
+      existing.rows[0].id,
+    ]);
+  } else {
+    await client.query(
+      `insert into "account"
+         (id, "accountId", "providerId", "userId", password, "createdAt", "updatedAt")
+       values ($1, $2, 'credential', $2, $3, now(), now())`,
+      [newId(), userId, password],
+    );
+  }
+
+  console.log(`✓ 演示账号就绪：${DEMO_EMAIL} / ${DEMO_PASSWORD}（密码已按 better-auth 的 scrypt 哈希入库）`);
+
+  return userId;
+};
+
+const ensureSamplePosts = async (adminId) => {
+  if (process.env.SEED_SAMPLE_POSTS === "0") {
+    console.log("· 已跳过示例文章（SEED_SAMPLE_POSTS=0）");
+    return;
+  }
+
+  const existing = await client.query('select count(*)::int as count from "post" where "authorId" = $1', [
+    adminId,
+  ]);
+
+  if (existing.rows[0].count > 0) {
+    console.log(`· 该作者已有 ${existing.rows[0].count} 篇文章，跳过示例数据`);
+    return;
+  }
+
+  let index = 0;
+  for (const sample of SAMPLES) {
+    index += 1;
+    await client.query(
+      `insert into "post" (id, title, content, published, "authorId", "createdAt", "updatedAt")
+       values ($1, $2, $3, $4, $5, now() - ($6 || ' hours')::interval, now() - ($7 || ' hours')::interval)`,
+      [newId(), sample.title, sample.content, sample.published, adminId, String(index * 26), String(index * 5)],
+    );
+  }
+
+  console.log(`✓ 已写入 ${SAMPLES.length} 篇示例文章（2 篇已发布 / 1 篇草稿）`);
+};
+
 try {
   await client.connect();
 
-  const upserted = await client.query(
-    `insert into "User" (id, email, name, password, "createdAt", "updatedAt")
-     values ($1, $2, $3, $4, now(), now())
-     on conflict (email) do update set name = excluded.name, "updatedAt" = now()
-     returning id, email`,
-    [newId(), DEMO_EMAIL, DEMO_NAME, DEMO_PASSWORD],
-  );
-
-  const adminId = upserted.rows[0].id;
-  console.log(`✓ 演示账号就绪：${DEMO_EMAIL} / ${DEMO_PASSWORD}`);
-
-  if (process.env.SEED_SAMPLE_POSTS === "0") {
-    console.log("· 已跳过示例文章（SEED_SAMPLE_POSTS=0）");
-  } else {
-    const existing = await client.query('select count(*)::int as count from "Post" where "authorId" = $1', [
-      adminId,
-    ]);
-
-    if (existing.rows[0].count > 0) {
-      console.log(`· 该作者已有 ${existing.rows[0].count} 篇文章，跳过示例数据`);
-    } else {
-      let index = 0;
-      for (const sample of SAMPLES) {
-        index += 1;
-        await client.query(
-          `insert into "Post" (id, title, content, published, "authorId", "createdAt", "updatedAt")
-           values ($1, $2, $3, $4, $5, now() - ($6 || ' hours')::interval, now() - ($7 || ' hours')::interval)`,
-          [
-            newId(),
-            sample.title,
-            sample.content,
-            sample.published,
-            adminId,
-            String(index * 26),
-            String(index * 5),
-          ],
-        );
-      }
-
-      console.log(`✓ 已写入 ${SAMPLES.length} 篇示例文章（2 篇已发布 / 1 篇草稿）`);
-    }
-  }
+  const adminId = await ensureDemoAccount();
+  await ensureSamplePosts(adminId);
 } catch (error) {
   console.error("seed 失败：", error);
   process.exitCode = 1;
