@@ -1,0 +1,17 @@
+# 不要打包进 Vercel 部署的文件
+# ---------------------------------------------------------------------------
+# Vercel CLI 的默认忽略清单（见 vercel/dist 里的 DEFAULT 列表）只包含
+# `.env.local` 和 `.env.*.local`，**不包含 `.env`** —— 结果就是本地 `.env`
+# 会被打进部署包，生产环境会悄悄读到你本地的值（比如那个 16 位的
+# BETTER_AUTH_SECRET，better-auth 已经在构建日志里警告过低熵了）。
+#
+# 现在所有环境变量统一在 Vercel 项目设置里配置：
+#   DATABASE_URL / PRISMA_DATABASE_URL / POSTGRES_URL  由 Prisma 集成注入
+#   BETTER_AUTH_SECRET                                 Production + Preview
+#   ENV_CONSTANT                                       Production
+# 需要新的变量时用 `npx vercel env add <NAME> production`，不要往 .env 里加。
+.env
+.env.*
+
+# 本地脚本与编辑器产物，构建不需要
+screenshots

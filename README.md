@@ -37,6 +37,11 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
   所以这里用普通 import + 条件挂载，react-markdown 与 highlight.js 自然留在独立 chunk 里
 - **`useDeferredValue` + `memo`**：打字时输入框优先，预览让位到下一个空闲帧，并短暂降透明度提示
 
+### 数据库
+
+表结构（better-auth 四张核心表 + `post`）、迁移流程、排错手册都在 **[`prisma/README.md`](./prisma/README.md)**。
+改表、同步线上库之前先看那份文档。
+
 ### 初始化数据
 
 ```bash
@@ -66,7 +71,9 @@ src/app/tokens.css             # Element Plus 色阶 + vben 布局变量（亮/�
 ### 还没做的部分
 
 - 登录只是写了个 cookie，没有真正的会话与权限校验（Server Action 可被直接 POST 调用，务必补上）
-- `User.password` 仍是明文，需要换成 bcrypt/argon2 哈希
+- 登录走 better-auth（`/api/auth/*` + `src/lib/auth-client.ts`），但后台页面还没接会话守卫
+  （Server Action 可被直接 POST 调用，务必补上）；`src/server/auth-actions.ts` 是早期演示版
+  登录，密码已改为校验 `account.password` 里的 scrypt 哈希
 - 编辑器还没有工具栏（加粗/链接/代码块按钮）、自动保存、标签 / slug 字段
 - 前台 `/postList` 还没接 Markdown 渲染（目前只读数据库，正文未展示）
 
